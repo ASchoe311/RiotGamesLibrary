@@ -1,0 +1,2 @@
+start /d "C:\Users\adamr\Desktop\Playnite Portable" Playnite.DesktopApp.exe
+@REM Powershell.exe -ExecutionPolicy Bypass -File "C:\Users\adamr\Documents\Coding\Playnite\ATLInt\ATLauncherInstanceImporter\taillog.ps1"

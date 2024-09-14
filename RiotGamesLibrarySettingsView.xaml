@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="RiotGamesLibrary.RiotGamesLibrarySettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="600">
+    <UserControl.Resources>
+        <FontFamily x:Key="FontIcoFont">/Fonts/icofont.ttf#icofont</FontFamily>
+    </UserControl.Resources>
+    <TabControl ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+        <TabItem Header="General Settings">
+            <StackPanel Margin="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Riot Client Install Path:" Grid.Column="0" Grid.Row="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Settings.RiotClientPath}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <CheckBox Content="Close Riot Client When Game Is Closed" IsChecked="{Binding Settings.CloseRiotClient}" Grid.Row="1" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBlock Text="Legends of Runeterra Install Path:" Grid.Column="0" Grid.Row="2" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Settings.LORPath}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                </Grid>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="League Settings">
+            <StackPanel Margin="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="League of Legends Install Path:" Grid.Row="0" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Settings.LeaguePath}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <CheckBox Content="Launch League of Legends on PBE (NOT YET IMPLEMENTED)" IsChecked="{Binding Settings.LeaguePBE}" Grid.Row="1" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBlock Text="League Companion App Executable (Optional):" Grid.Row="2" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Settings.LeagueCompanionExe, UpdateSourceTrigger=PropertyChanged}" x:Name="LeagueCompanionPathTxt" Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <Button Name="ChooseLeagueCompanionPath" Content="&#xec5b;" Click="ChooseLeagueCompanionBtn" Grid.Row="2" Grid.Column="2" Margin="5,0,0,5" FontFamily="{DynamicResource FontIcoFont}"/>
+                    <CheckBox Content="Close League Companion when League Is Closed" IsChecked="{Binding Settings.CloseCompanionWithLeague}" Grid.Row="4" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                </Grid>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="Valorant Settings">
+            <StackPanel Margin="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Valorant Install Path:" Grid.Row="0" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Settings.ValorantPath}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <TextBlock Text="Valorant Companion App Executable (Optional):" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Settings.ValorantCompanionExe, UpdateSourceTrigger=PropertyChanged}" x:Name="ValorantCompanionPathTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <Button Name="ChooseValorantCompanionPath" Content="&#xec5b;" Click="ChooseValorantCompanionBtn" Grid.Row="1" Grid.Column="3" Margin="5,0,0,5" FontFamily="{DynamicResource FontIcoFont}"/>
+                    <CheckBox Content="Close Valorant Companion when Valorant Is Closed" IsChecked="{Binding Settings.CloseCompanionWithValorant}" Grid.Row="2" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                </Grid>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</UserControl>
