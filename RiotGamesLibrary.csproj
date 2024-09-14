@@ -62,7 +62,6 @@
     <None Include="extension.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="icofont.ttf" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
