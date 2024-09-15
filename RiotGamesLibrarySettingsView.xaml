@@ -14,24 +14,30 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Riot Client Install Path:" Grid.Column="0" Grid.Row="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Settings.RiotClientPath}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <Run Text="Riot Client Install Path:"/>
+                        <Run Text="{Binding Settings.RiotClientPath, Mode=OneWay}"/>
+                    </TextBlock>
                     <CheckBox Content="Close Riot Client When Game Is Closed" IsChecked="{Binding Settings.CloseRiotClient}" Grid.Row="1" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBlock Text="Legends of Runeterra Install Path:" Grid.Column="0" Grid.Row="2" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Settings.LORPath}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <Run Text="Legends of Runeterra Install Path:"/>
+                        <Run Text="{Binding Settings.LORPath, Mode=OneWay}"/>
+                    </TextBlock>
                 </Grid>
             </StackPanel>
         </TabItem>
         <TabItem Header="League Settings">
             <StackPanel Margin="20">
+                <TextBlock Margin="5,0,0,5" VerticalAlignment="Center">
+                    <Run Text="League of Legends Install Path:"/>
+                    <Run Text="{Binding Settings.LeaguePath, Mode=OneWay}"/>
+                </TextBlock>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -41,17 +47,14 @@
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="League of Legends Install Path:" Grid.Row="0" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Settings.LeaguePath}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
-                    <CheckBox Content="Launch League of Legends on PBE (NOT YET IMPLEMENTED)" IsChecked="{Binding Settings.LeaguePBE}" Grid.Row="1" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBlock Text="League Companion App Executable (Optional):" Grid.Row="2" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Settings.LeagueCompanionExe, UpdateSourceTrigger=PropertyChanged}" x:Name="LeagueCompanionPathTxt" Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
-                    <Button Name="ChooseLeagueCompanionPath" Content="&#xec5b;" Click="ChooseLeagueCompanionBtn" Grid.Row="2" Grid.Column="2" Margin="5,0,0,5" FontFamily="{DynamicResource FontIcoFont}"/>
-                    <CheckBox Content="Close League Companion when League Is Closed" IsChecked="{Binding Settings.CloseCompanionWithLeague}" Grid.Row="4" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBlock Text="League Companion App Executable (Optional):" Grid.Row="0" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Settings.LeagueCompanionExe, UpdateSourceTrigger=PropertyChanged}" x:Name="LeagueCompanionPathTxt" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <Button Name="ChooseLeagueCompanionPath" Content="&#xec5b;" Click="ChooseLeagueCompanionBtn" Grid.Row="0" Grid.Column="2" Margin="5,0,0,5" FontFamily="{DynamicResource FontIcoFont}"/>
+                    <TextBlock Text="Companion app launch arguments:" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Settings.LeagueCompanionExeArgs, UpdateSourceTrigger=PropertyChanged}" x:Name="LeagueCompanionPathArgsTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
                 </Grid>
+                <CheckBox Content="Close League Companion when League Is Closed" IsChecked="{Binding Settings.CloseCompanionWithLeague}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
             </StackPanel>
         </TabItem>
         <TabItem Header="Valorant Settings">
@@ -66,13 +69,16 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <TextBlock Text="Valorant Install Path:" Grid.Row="0" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Settings.ValorantPath}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Settings.ValorantPath, Mode=OneWay}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
                     <TextBlock Text="Valorant Companion App Executable (Optional):" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                     <TextBox Text="{Binding Settings.ValorantCompanionExe, UpdateSourceTrigger=PropertyChanged}" x:Name="ValorantCompanionPathTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
                     <Button Name="ChooseValorantCompanionPath" Content="&#xec5b;" Click="ChooseValorantCompanionBtn" Grid.Row="1" Grid.Column="3" Margin="5,0,0,5" FontFamily="{DynamicResource FontIcoFont}"/>
-                    <CheckBox Content="Close Valorant Companion when Valorant Is Closed" IsChecked="{Binding Settings.CloseCompanionWithValorant}" Grid.Row="2" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBlock Text="Companion app launch arguments:" Grid.Row="2" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Settings.ValorantCompanionExeArgs, UpdateSourceTrigger=PropertyChanged}" x:Name="ValorantCompanionPathArgsTxt" Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <CheckBox Content="Close Valorant Companion when Valorant Is Closed" IsChecked="{Binding Settings.CloseCompanionWithValorant}" Grid.Row="3" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 </Grid>
             </StackPanel>
         </TabItem>

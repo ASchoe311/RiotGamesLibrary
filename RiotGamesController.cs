@@ -18,9 +18,11 @@ namespace RiotGamesLibrary
     {
         private static readonly ILogger logger = LogManager.GetLogger();
         private CancellationTokenSource watcherToken;
-        public RiotInstallController(Game game) : base(game)
+        private RiotGamesLibrary _plugin;
+        public RiotInstallController(Game game, RiotGamesLibrary plugin) : base(game)
         {
             Name = $"Install {game.Name}";
+            _plugin = plugin;
         }
 
         public override void Install(InstallActionArgs args)
@@ -48,6 +50,7 @@ namespace RiotGamesLibrary
                                 InstallDirectory = RiotClient.LORInstallPath
                             };
                             InvokeOnInstalled(new GameInstalledEventArgs(installInfo));
+                            _plugin.UpdateSettings();
                             return;
                         }
                     }
@@ -60,6 +63,7 @@ namespace RiotGamesLibrary
                                 InstallDirectory = RiotClient.LeagueInstallPath
                             };
                             InvokeOnInstalled(new GameInstalledEventArgs(installInfo));
+                            _plugin.UpdateSettings();
                             return;
                         }
                     }
@@ -72,6 +76,7 @@ namespace RiotGamesLibrary
                                 InstallDirectory = RiotClient.ValorantInstallPath
                             };
                             InvokeOnInstalled(new GameInstalledEventArgs(installInfo));
+                            _plugin.UpdateSettings();
                             return;
                         }
                     }
@@ -97,6 +102,8 @@ namespace RiotGamesLibrary
                 new MessageBoxOption("Cancel", false, true)
             };
 
+        private RiotGamesLibrary _plugin;
+
         private string GetUninstallStringFromGameID()
         {
             if (Game.GameId == "rg-leagueoflegends")
@@ -115,9 +122,10 @@ namespace RiotGamesLibrary
             return string.Empty;
         }
 
-        public RiotUninstallController(Game game) : base(game)
+        public RiotUninstallController(Game game, RiotGamesLibrary plugin) : base(game)
         {
             Name = $"Uninstall {game.Name}";
+            _plugin = plugin;
         }
 
         private CancellationTokenSource watcherToken;
@@ -189,6 +197,7 @@ namespace RiotGamesLibrary
                     {
                         logger.Debug("Uninstall finished");
                         InvokeOnUninstalled(new GameUninstalledEventArgs());
+                        _plugin.UpdateSettings();
                         return;
                     }
                     
@@ -199,6 +208,7 @@ namespace RiotGamesLibrary
                     {
                         logger.Debug("Uninstall finished");
                         InvokeOnUninstalled(new GameUninstalledEventArgs());
+                        _plugin.UpdateSettings();
                         return;
                     }
 
@@ -209,6 +219,7 @@ namespace RiotGamesLibrary
                     {
                         logger.Debug("Uninstall finished");
                         InvokeOnUninstalled(new GameUninstalledEventArgs());
+                        _plugin.UpdateSettings();
                         return;
                     }
 

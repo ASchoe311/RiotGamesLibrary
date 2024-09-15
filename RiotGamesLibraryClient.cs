@@ -32,5 +32,3 @@ namespace RiotGamesLibrary
         }
     }
 }
-//Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\riotclient\DefaultIcon
-// Computer\HKEY_USERS\S-1-5-21-4227508906-1149539934-2714898774-1001\Control Panel\NotifyIconSettings\2047204458577611852

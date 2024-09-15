@@ -49,9 +49,7 @@ namespace RiotGamesLibrary
                 HasSettings = true
             };
             settings.Settings.RiotClientPath = RiotClient.InstallationPath;
-            settings.Settings.LeaguePath = RiotClient.LeagueInstallPath;
-            settings.Settings.ValorantPath = RiotClient.ValorantInstallPath;
-            settings.Settings.LORPath = RiotClient.LORInstallPath;
+            UpdateSettings();
         }
 
         private string GetGameArgs(Enum game)
@@ -93,6 +91,7 @@ namespace RiotGamesLibrary
                             IsPlayAction = true
                         }
                     },
+                    Platforms = new HashSet<MetadataProperty> { new MetadataNameProperty("PC (Windows)") },
                     IsInstalled = RiotClient.LeagueInstalled,
                     InstallDirectory = RiotClient.LeagueInstallPath,
                     Icon = new MetadataFile(RiotClient.LeagueIcon)
@@ -114,6 +113,7 @@ namespace RiotGamesLibrary
                             IsPlayAction = true
                         }
                     },
+                    Platforms = new HashSet<MetadataProperty> { new MetadataNameProperty("PC (Windows)") },
                     IsInstalled = RiotClient.ValorantInstalled,
                     InstallDirectory = RiotClient.ValorantInstallPath,
                     Icon = new MetadataFile(RiotClient.ValorantIcon)
@@ -135,11 +135,38 @@ namespace RiotGamesLibrary
                             IsPlayAction = true
                         }
                     },
+                    Platforms = new HashSet<MetadataProperty> { new MetadataNameProperty("PC (Windows)") },
                     IsInstalled = RiotClient.LORInstalled,
                     InstallDirectory = RiotClient.LORInstallPath,
                     Icon = new MetadataFile(RiotClient.LORIcon)
                 }
             };
+            //if (settings.Settings.LeagueCompanionExe != string.Empty)
+            //{
+            //    gameList[0].GameActions.Add(new GameAction()
+            //    {
+            //        Name = "Open companion app",
+            //        Type = GameActionType.File,
+            //        Path = settings.Settings.LeagueCompanionExe,
+            //        Arguments = settings.Settings.LeagueCompanionExeArgs,
+            //        WorkingDir = Path.GetDirectoryName(settings.Settings.LeagueCompanionExe),
+            //        TrackingMode = TrackingMode.Default,
+            //        IsPlayAction = false
+            //    });
+            //}
+            //if (settings.Settings.ValorantCompanionExe != string.Empty)
+            //{
+            //    gameList[0].GameActions.Add(new GameAction()
+            //    {
+            //        Name = "Open companion app",
+            //        Type = GameActionType.File,
+            //        Path = settings.Settings.ValorantCompanionExe,
+            //        Arguments = settings.Settings.ValorantCompanionExeArgs,
+            //        WorkingDir = Path.GetDirectoryName(settings.Settings.ValorantCompanionExe),
+            //        TrackingMode = TrackingMode.Default,
+            //        IsPlayAction = false
+            //    });
+            //}
             //if (settings.Settings.LeaguePBE)
             //{
             //    gameList.Add(new GameMetadata()
@@ -179,7 +206,14 @@ namespace RiotGamesLibrary
                 if (settings.Settings.LeagueCompanionExe != string.Empty)
                 {
                     logger.Debug($"Trying to run companion at {settings.Settings.LeagueCompanionExe}");
-                    Process.Start(settings.Settings.LeagueCompanionExe);
+                    if (settings.Settings.LeagueCompanionExeArgs != string.Empty)
+                    {
+                        Process.Start(settings.Settings.LeagueCompanionExe, settings.Settings.LeagueCompanionExeArgs);
+                    }
+                    else
+                    {
+                        Process.Start(settings.Settings.LeagueCompanionExe);
+                    }
                 }
             }
             if (args.Game.GameId == "rg-valorant")
@@ -187,11 +221,26 @@ namespace RiotGamesLibrary
                 if (settings.Settings.ValorantCompanionExe != string.Empty)
                 {
                     logger.Debug($"Trying to run companion at {settings.Settings.ValorantCompanionExe}");
-                    Process.Start(settings.Settings.ValorantCompanionExe);
+                    if (settings.Settings.ValorantCompanionExeArgs != string.Empty)
+                    {
+                        Process.Start(settings.Settings.ValorantCompanionExe, settings.Settings.ValorantCompanionExeArgs);
+                    }
+                    else
+                    {
+                        Process.Start(settings.Settings.ValorantCompanionExe);
+                    }
                 }
             }
             base.OnGameStarted(args);
         }
+
+        private static List<string> overwolfProcs = new List<string>()
+        {
+            "Overwolf",
+            "OverwolfBrowser",
+            "OverwolfHelper64",
+            "OverwolfHelper"
+        };
 
         public override void OnGameStopped(OnGameStoppedEventArgs args)
         {
@@ -203,11 +252,27 @@ namespace RiotGamesLibrary
             {
                 if (settings.Settings.CloseCompanionWithLeague && settings.Settings.LeagueCompanionExe != string.Empty)
                 {
-                    logger.Debug($"Trying to stop companion by name {Path.GetFileNameWithoutExtension(settings.Settings.LeagueCompanionExe)}");
-                    Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(settings.Settings.LeagueCompanionExe));
-                    foreach (Process proc in procs)
+                    if (Path.GetFileNameWithoutExtension(settings.Settings.LeagueCompanionExe) == "OverwolfLauncher")
                     {
-                        proc.Kill();
+                        logger.Debug("Stopping overwolf processes");
+                        foreach (string owProc in overwolfProcs)
+                        {
+                            var procs = Process.GetProcessesByName(owProc);
+                            foreach (var proc in procs)
+                            {
+                                if (proc != null) { proc.Kill(); }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        logger.Debug($"Trying to stop companion by name {Path.GetFileNameWithoutExtension(settings.Settings.LeagueCompanionExe)}");
+                        Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(settings.Settings.LeagueCompanionExe));
+                        foreach (Process proc in procs)
+                        {
+                            proc.Kill();
+                        }
+
                     }
                 }
             }
@@ -215,11 +280,27 @@ namespace RiotGamesLibrary
             {
                 if (settings.Settings.CloseCompanionWithValorant && settings.Settings.ValorantCompanionExe != string.Empty)
                 {
-                    logger.Debug($"Trying to stop companion by name {Path.GetFileNameWithoutExtension(settings.Settings.ValorantCompanionExe)}");
-                    Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(settings.Settings.ValorantCompanionExe));
-                    foreach (Process proc in procs)
+
+                    if (Path.GetFileNameWithoutExtension(settings.Settings.ValorantCompanionExe) == "OverwolfLauncher")
                     {
-                        proc.Kill();
+                        logger.Debug("Stopping overwolf processes");
+                        foreach (string owProc in overwolfProcs)
+                        {
+                            var procs = Process.GetProcessesByName(owProc);
+                            foreach (var proc in procs)
+                            {
+                                if (proc != null) { proc.Kill(); }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        logger.Debug($"Trying to stop companion by name {Path.GetFileNameWithoutExtension(settings.Settings.ValorantCompanionExe)}");
+                        Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(settings.Settings.ValorantCompanionExe));
+                        foreach (Process proc in procs)
+                        {
+                            proc.Kill();
+                        }
                     }
                 }
             }
@@ -234,6 +315,13 @@ namespace RiotGamesLibrary
             base.OnGameStopped(args);
         }
 
+        public void UpdateSettings()
+        {
+            settings.Settings.LeaguePath = RiotClient.LeagueInstalled? RiotClient.LeagueInstallPath: "Not Installed";
+            settings.Settings.ValorantPath = RiotClient.ValorantInstalled ? RiotClient.ValorantInstallPath : "Not Installed";
+            settings.Settings.LORPath = RiotClient.LORInstalled ? RiotClient.LORInstallPath : "Not Installed";
+        }
+
         public override IEnumerable<InstallController> GetInstallActions(GetInstallActionsArgs args)
         {
             if (args.Game.PluginId != Id)
@@ -241,7 +329,7 @@ namespace RiotGamesLibrary
                 yield break;
             }
 
-            yield return new RiotInstallController(args.Game);
+            yield return new RiotInstallController(args.Game, this);
         }
 
         public override IEnumerable<UninstallController> GetUninstallActions(GetUninstallActionsArgs args)
@@ -251,7 +339,7 @@ namespace RiotGamesLibrary
                 yield break;
             }
 
-            yield return new RiotUninstallController(args.Game);
+            yield return new RiotUninstallController(args.Game, this);
         }
         public override ISettings GetSettings(bool firstRunSettings)
         {
