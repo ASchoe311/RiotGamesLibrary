@@ -317,7 +317,7 @@ namespace RiotGamesLibrary
 
         public void UpdateSettings()
         {
-            settings.Settings.LeaguePath = RiotClient.LeagueInstalled? RiotClient.LeagueInstallPath: "Not Installed";
+            settings.Settings.LeaguePath = RiotClient.LeagueInstalled ? RiotClient.LeagueInstallPath: "Not Installed";
             settings.Settings.ValorantPath = RiotClient.ValorantInstalled ? RiotClient.ValorantInstallPath : "Not Installed";
             settings.Settings.LORPath = RiotClient.LORInstalled ? RiotClient.LORInstallPath : "Not Installed";
         }
