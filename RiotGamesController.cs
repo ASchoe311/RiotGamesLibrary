@@ -28,7 +28,7 @@ namespace RiotGamesLibrary
         public override void Install(InstallActionArgs args)
         {
             logger.Info("Opening riot client for installation");
-            Playnite.SDK.API.Instance.Dialogs.ShowMessage("Opening Riot Client so you can install the game");
+            Playnite.SDK.API.Instance.Dialogs.ShowMessage("Opening Riot Client so you can manually start game installation");
             Process.Start(RiotClient.ClientExecPath);
             StartInstallWatcher();
         }
@@ -138,10 +138,6 @@ namespace RiotGamesLibrary
 
         public override void Uninstall(UninstallActionArgs args)
         {
-            Process proc = Process.GetProcessesByName("Riot Client").FirstOrDefault();
-            if (proc != null) { proc.Kill(); }
-            proc = Process.GetProcessesByName("RiotClientServices").FirstOrDefault();
-            if (proc != null) { proc.Kill(); }
             Dispose();
             StartUninstallWatcher();
             var playniteApi = Playnite.SDK.API.Instance;
@@ -171,10 +167,18 @@ namespace RiotGamesLibrary
             }
             else if (selected.IsDefault)
             {
+                Process proc = Process.GetProcessesByName("Riot Client").FirstOrDefault();
+                if (proc != null) { proc.Kill(); }
+                proc = Process.GetProcessesByName("RiotClientServices").FirstOrDefault();
+                if (proc != null) { proc.Kill(); }
                 Process.Start(RiotClient.ClientExecPath, (GetUninstallStringFromGameID() + " --uninstall-patchline=live"));
             }
             else
             {
+                Process proc = Process.GetProcessesByName("Riot Client").FirstOrDefault();
+                if (proc != null) { proc.Kill(); }
+                proc = Process.GetProcessesByName("RiotClientServices").FirstOrDefault();
+                if (proc != null) { proc.Kill(); }
                 Process.Start(RiotClient.ClientExecPath, (GetUninstallStringFromGameID() + " --uninstall-patchline=PBE"));
 
             }
