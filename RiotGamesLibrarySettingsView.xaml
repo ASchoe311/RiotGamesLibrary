@@ -24,7 +24,7 @@
                         <Run Text="Riot Client Install Path:"/>
                         <Run Text="{Binding Settings.RiotClientPath, Mode=OneWay}"/>
                     </TextBlock>
-                    <CheckBox Content="Close Riot Client When Game Is Closed" IsChecked="{Binding Settings.CloseRiotClient}" Grid.Row="1" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <CheckBox Content="Close Riot Client When Game Is Closed" IsChecked="{Binding Settings.CloseRiotClient}" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                     <TextBlock Grid.Column="0" Grid.Row="2" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
                         <Run Text="Legends of Runeterra Install Path:"/>
                         <Run Text="{Binding Settings.LORPath, Mode=OneWay}"/>
@@ -54,11 +54,15 @@
                     <TextBlock Text="Companion app launch arguments:" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                     <TextBox Text="{Binding Settings.LeagueCompanionExeArgs, UpdateSourceTrigger=PropertyChanged}" x:Name="LeagueCompanionPathArgsTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
                 </Grid>
-                <CheckBox Content="Close League Companion when League Is Closed" IsChecked="{Binding Settings.CloseCompanionWithLeague}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <CheckBox Content="Close League Companion when League Is Closed" IsChecked="{Binding Settings.CloseCompanionWithLeague}" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
             </StackPanel>
         </TabItem>
         <TabItem Header="Valorant Settings">
             <StackPanel Margin="20">
+                <TextBlock Margin="5,0,0,5" VerticalAlignment="Center">
+                    <Run Text="Valorant Install Path:"/>
+                    <Run Text="{Binding Settings.ValorantPath, Mode=OneWay}"/>
+                </TextBlock>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -68,18 +72,14 @@
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Valorant Install Path:" Grid.Row="0" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Settings.ValorantPath, Mode=OneWay}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
-                    <TextBlock Text="Valorant Companion App Executable (Optional):" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Settings.ValorantCompanionExe, UpdateSourceTrigger=PropertyChanged}" x:Name="ValorantCompanionPathTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
-                    <Button Name="ChooseValorantCompanionPath" Content="&#xec5b;" Click="ChooseValorantCompanionBtn" Grid.Row="1" Grid.Column="3" Margin="5,0,0,5" FontFamily="{DynamicResource FontIcoFont}"/>
-                    <TextBlock Text="Companion app launch arguments:" Grid.Row="2" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Settings.ValorantCompanionExeArgs, UpdateSourceTrigger=PropertyChanged}" x:Name="ValorantCompanionPathArgsTxt" Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
-                    <CheckBox Content="Close Valorant Companion when Valorant Is Closed" IsChecked="{Binding Settings.CloseCompanionWithValorant}" Grid.Row="3" Grid.Column="0" Margin="10,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBlock Text="Valorant Companion App Executable (Optional):" Grid.Row="0" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Settings.ValorantCompanionExe, UpdateSourceTrigger=PropertyChanged}" x:Name="ValorantCompanionPathTxt" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
+                    <Button Name="ChooseValorantCompanionPath" Content="&#xec5b;" Click="ChooseValorantCompanionBtn" Grid.Row="0" Grid.Column="3" Margin="5,0,0,5" FontFamily="{DynamicResource FontIcoFont}"/>
+                    <TextBlock Text="Companion app launch arguments:" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Settings.ValorantCompanionExeArgs, UpdateSourceTrigger=PropertyChanged}" x:Name="ValorantCompanionPathArgsTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
                 </Grid>
+                <CheckBox Content="Close Valorant Companion when Valorant Is Closed" IsChecked="{Binding Settings.CloseCompanionWithValorant}" Grid.Row="3" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
             </StackPanel>
         </TabItem>
     </TabControl>
