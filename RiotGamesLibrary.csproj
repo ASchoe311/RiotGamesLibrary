@@ -83,6 +83,9 @@
     <Content Include="Resources\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="InstallerManifest.yaml" />
   </ItemGroup>
   <ItemGroup>

@@ -29,12 +29,16 @@ namespace RiotGamesLibrary
 
         private RiotGamesLibrarySettingsViewModel settings { get; set; }
 
+        internal static readonly string AssemblyPath = Path.GetDirectoryName(typeof(RiotGamesLibrary).Assembly.Location);
+
+        private static readonly string iconPath = Path.Combine(AssemblyPath, "icon.png");
+
         public override Guid Id { get; } = Guid.Parse("91d13c6f-63d3-42ed-a100-6f811a8387ea");
 
         // Change to something more appropriate
         public override string Name => "Riot Games";
 
-        public override string LibraryIcon => RiotClient.Icon;
+        public override string LibraryIcon { get; } = iconPath;
 
 
 
