@@ -55,6 +55,7 @@
                     <TextBox Text="{Binding Settings.LeagueCompanionExeArgs, UpdateSourceTrigger=PropertyChanged}" x:Name="LeagueCompanionPathArgsTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
                 </Grid>
                 <CheckBox Content="Close League Companion when League Is Closed" IsChecked="{Binding Settings.CloseCompanionWithLeague}" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <CheckBox Content="Generate a game action to open companion app" IsChecked="{Binding Settings.MakeLeagueCompAppAction}" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
             </StackPanel>
         </TabItem>
         <TabItem Header="Valorant Settings">
@@ -80,6 +81,7 @@
                     <TextBox Text="{Binding Settings.ValorantCompanionExeArgs, UpdateSourceTrigger=PropertyChanged}" x:Name="ValorantCompanionPathArgsTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
                 </Grid>
                 <CheckBox Content="Close Valorant Companion when Valorant Is Closed" IsChecked="{Binding Settings.CloseCompanionWithValorant}" Grid.Row="3" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <CheckBox Content="Generate a game action to open companion app" IsChecked="{Binding Settings.MakeValorantCompAppAction}" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
             </StackPanel>
         </TabItem>
     </TabControl>

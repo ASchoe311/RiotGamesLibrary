@@ -145,59 +145,116 @@ namespace RiotGamesLibrary
                     Icon = new MetadataFile(RiotClient.LORIcon)
                 }
             };
-            //if (settings.Settings.LeagueCompanionExe != string.Empty)
-            //{
-            //    gameList[0].GameActions.Add(new GameAction()
-            //    {
-            //        Name = "Open companion app",
-            //        Type = GameActionType.File,
-            //        Path = settings.Settings.LeagueCompanionExe,
-            //        Arguments = settings.Settings.LeagueCompanionExeArgs,
-            //        WorkingDir = Path.GetDirectoryName(settings.Settings.LeagueCompanionExe),
-            //        TrackingMode = TrackingMode.Default,
-            //        IsPlayAction = false
-            //    });
-            //}
-            //if (settings.Settings.ValorantCompanionExe != string.Empty)
-            //{
-            //    gameList[0].GameActions.Add(new GameAction()
-            //    {
-            //        Name = "Open companion app",
-            //        Type = GameActionType.File,
-            //        Path = settings.Settings.ValorantCompanionExe,
-            //        Arguments = settings.Settings.ValorantCompanionExeArgs,
-            //        WorkingDir = Path.GetDirectoryName(settings.Settings.ValorantCompanionExe),
-            //        TrackingMode = TrackingMode.Default,
-            //        IsPlayAction = false
-            //    });
-            //}
-            //if (settings.Settings.LeaguePBE)
-            //{
-            //    gameList.Add(new GameMetadata()
-            //    {
-            //        Name = "League of Legends PBE",
-            //        GameId = "rg-leagueoflegendspbe",
-            //        GameActions = new List<GameAction>
-            //        {
-            //            new GameAction()
-            //            {
-            //                Type = GameActionType.File,
-            //                Path = RiotClient.ClientExecPath,
-            //                Arguments = GetGameArgs(GamesEnums.LeaguePBE),
-            //                WorkingDir = RiotClient.InstallationPath,
-            //                TrackingMode = TrackingMode.Directory,
-            //                TrackingPath = RiotClient.LeagueInstallPath,
-            //                IsPlayAction = true
-            //            }
-            //        },
-            //        IsInstalled = RiotClient.LeagueInstalled,
-            //        InstallDirectory = RiotClient.LeagueInstallPath,
-            //        Icon = new MetadataFile(RiotClient.LeagueIcon)
-            //    });
-            //}
+            if (settings.Settings.MakeLeagueCompAppAction && settings.Settings.LeagueCompanionExe != string.Empty)
+            {
+                gameList[0].GameActions.Add(new GameAction()
+                {
+                    Name = "Open Companion App",
+                    Type = GameActionType.File,
+                    Path = settings.Settings.LeagueCompanionExe,
+                    Arguments = settings.Settings.LeagueCompanionExeArgs,
+                    WorkingDir = Path.GetDirectoryName(settings.Settings.LeagueCompanionExe),
+                    TrackingMode = TrackingMode.Default,
+                    IsPlayAction = false
+                });
+            }
+            if (settings.Settings.MakeValorantCompAppAction && settings.Settings.ValorantCompanionExe != string.Empty)
+            {
+                gameList[0].GameActions.Add(new GameAction()
+                {
+                    Name = "Open Companion App",
+                    Type = GameActionType.File,
+                    Path = settings.Settings.ValorantCompanionExe,
+                    Arguments = settings.Settings.ValorantCompanionExeArgs,
+                    WorkingDir = Path.GetDirectoryName(settings.Settings.ValorantCompanionExe),
+                    TrackingMode = TrackingMode.Default,
+                    IsPlayAction = false
+                });
+            }
             return gameList;
         }
 
+        public void UpdateCompanionActions()
+        {
+            PlayniteApi.Database.Games.BeginBufferUpdate();
+            foreach (var game in PlayniteApi.Database.Games)
+            {
+                if (game.PluginId != Id)
+                {
+                    continue;
+                }
+                if (game.GameId == "rg-leagueoflegends")
+                {
+                    if (settings.Settings.LeagueCompanionExe != string.Empty)
+                    {
+                        if (game.GameActions.Count == 2)
+                        {
+                            var action = game.GameActions[1];
+                            action.Path = settings.Settings.LeagueCompanionExe;
+                            action.Arguments = settings.Settings.LeagueCompanionExeArgs;
+                            action.WorkingDir = Path.GetDirectoryName(settings.Settings.LeagueCompanionExe);
+                        }
+                        else if (settings.Settings.MakeLeagueCompAppAction)
+                        {
+                            var action = new GameAction()
+                            {
+                                Name = "Open Companion App",
+                                Type = GameActionType.File,
+                                Path = settings.Settings.LeagueCompanionExe,
+                                Arguments = settings.Settings.LeagueCompanionExeArgs,
+                                WorkingDir = Path.GetDirectoryName(settings.Settings.LeagueCompanionExe),
+                                TrackingMode = TrackingMode.Default,
+                                IsPlayAction = false
+                            };
+                            game.GameActions.Add(action);
+                        }
+                    }
+                    if (settings.Settings.LeagueCompanionExe == string.Empty || !settings.Settings.MakeLeagueCompAppAction)
+                    {
+                        if (game.GameActions.Count == 2)
+                        {
+                            game.GameActions.Remove(game.GameActions.ElementAt(1));
+                        }
+                    }
+                }
+                if (game.GameId == "rg-valorant")
+                {
+                    if (settings.Settings.ValorantCompanionExe != string.Empty)
+                    {
+                        if (game.GameActions.Count == 2)
+                        {
+                            var action = game.GameActions[1];
+                            action.Path = settings.Settings.ValorantCompanionExe;
+                            action.Arguments = settings.Settings.ValorantCompanionExeArgs;
+                            action.WorkingDir = Path.GetDirectoryName(settings.Settings.ValorantCompanionExe);
+                        }
+                        else if (settings.Settings.MakeValorantCompAppAction)
+                        {
+                            var action = new GameAction()
+                            {
+                                Name = "Open Companion App",
+                                Type = GameActionType.File,
+                                Path = settings.Settings.ValorantCompanionExe,
+                                Arguments = settings.Settings.ValorantCompanionExeArgs,
+                                WorkingDir = Path.GetDirectoryName(settings.Settings.ValorantCompanionExe),
+                                TrackingMode = TrackingMode.Default,
+                                IsPlayAction = false
+                            };
+                            game.GameActions.Add(action);
+                        }
+                    }
+                    if (settings.Settings.ValorantCompanionExe == string.Empty || !settings.Settings.MakeValorantCompAppAction)
+                    {
+                        if (game.GameActions.Count == 2)
+                        {
+                            game.GameActions.Remove(game.GameActions.ElementAt(1));
+                        }
+                    }
+                }
+                PlayniteApi.Database.Games.Update(game);
+            }
+            PlayniteApi.Database.Games.EndBufferUpdate();
+        }
         public override void OnGameStarted(OnGameStartedEventArgs args)
         {
             //logger.Debug($"launching game with id {args.Game.Id}");

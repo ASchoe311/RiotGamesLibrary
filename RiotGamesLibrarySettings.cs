@@ -23,6 +23,8 @@ namespace RiotGamesLibrary
         private string _ValorantCompanionExeArgs = string.Empty;
         private bool _CloseCompanionWithValorant = true;
         private string _LORPath = RiotClient.LORInstalled ? RiotClient.LORInstallPath : "Not Installed";
+        private bool _MakeLeagueCompAppAction = true;
+        private bool _MakeValorantCompAppAction = true;
 
         public string LeagueCompanionExe { get => _LeagueCompanionExe; set => SetValue(ref _LeagueCompanionExe, value); }
         public bool CloseRiotClient { get => _CloseRiotClient; set => SetValue(ref _CloseRiotClient, value); }
@@ -36,6 +38,8 @@ namespace RiotGamesLibrary
         public string LORPath { get => _LORPath; set => SetValue(ref _LORPath, value);  }
         public string LeagueCompanionExeArgs { get => _LeagueCompanionExeArgs; set => SetValue(ref _LeagueCompanionExeArgs, value); }
         public string ValorantCompanionExeArgs { get => _ValorantCompanionExeArgs; set => SetValue(ref _ValorantCompanionExeArgs, value); }
+        public bool MakeLeagueCompAppAction {  get => _MakeLeagueCompAppAction; set => SetValue(ref _MakeLeagueCompAppAction, value); }
+        public bool MakeValorantCompAppAction { get => _MakeValorantCompAppAction; set => SetValue(ref _MakeValorantCompAppAction, value); }
     }
 
     public class RiotGamesLibrarySettingsViewModel : ObservableObject, ISettings
@@ -90,6 +94,7 @@ namespace RiotGamesLibrary
         {
             // Code executed when user decides to confirm changes made since BeginEdit was called.
             // This method should save settings made to Option1 and CloseRiotClient.
+            plugin.UpdateCompanionActions();
             plugin.SavePluginSettings(Settings);
         }
 
