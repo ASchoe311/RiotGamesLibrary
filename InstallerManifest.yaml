@@ -1,5 +1,15 @@
 ﻿AddonId: RiotGamesLibrary_91d13c6f-63d3-42ed-a100-6f811a8387ea
 Packages:
+  - Version: 2.0
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2024-09-18
+    PackageUrl: https://github.com/ASchoe311/RiotGamesLibrary/releases/download/v2.0/RiotGamesLibrary_91d13c6f-63d3-42ed-a100-6f811a8387ea_2_0.pext
+    Changelog:
+      - Overwolf-based companion apps are now handled correctly and are able to be launched and closed with League or Valorant
+      - Improvements to the look and function of settings menu
+      - Fixed a major bug where the arguments of a shortcut file would not be used when the shortcut was selected as the path for a companion app
+      - Fixed library icon display
+      - Added options to generate game actions to open companion apps for League and Valorant
   - Version: 1.0
     RequiredApiVersion: 6.2.0
     ReleaseDate: 2024-09-14
