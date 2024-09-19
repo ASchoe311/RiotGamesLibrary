@@ -52,7 +52,6 @@ namespace RiotGamesLibrary
             {
                 HasSettings = true
             };
-            settings.Settings.RiotClientPath = RiotClient.InstallationPath;
             UpdateSettings();
         }
 
@@ -128,7 +127,7 @@ namespace RiotGamesLibrary
                 {
                     Name = "Legends of Runeterra",
                     GameId = "rg-legendsofruneterra",
-                    Source = new MetadataNameProperty("Riot Games"),
+                    Source = new MetadataNameProperty("Rios"),
                     GameActions = new List<GameAction>
                     {
                         new GameAction()
@@ -149,6 +148,56 @@ namespace RiotGamesLibrary
                 }
             };
             return gameList;
+        }
+
+        //REMOVE AFTER A FEW UPDATES
+        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
+        {
+            base.OnApplicationStarted(args);
+            if (settings.Settings.FirstStart)
+            {
+                logger.Info("Detected first run of new plugin version, ensuring sources are properly set and clearing outdated companion actions");
+                Guid rgSource = Guid.NewGuid();
+                bool srcFound = false;
+                foreach (var source in PlayniteApi.Database.Sources)
+                {
+                    //logger.Debug($"Source with id {source.Id} is {source.Name}");
+                    if (source.Name == "Riot Games")
+                    {
+                        rgSource = source.Id;
+                        srcFound = true;
+                    }
+
+                }
+                if (!srcFound)
+                {
+                    GameSource rg = new GameSource("Riot Games");
+                    rgSource = rg.Id;
+                    PlayniteApi.Database.Sources.Add(rg);
+                    PlayniteApi.Database.Sources.Update(rg);
+                }
+                foreach (var game in PlayniteApi.Database.Games)
+                {
+                    if (game.PluginId != Id)
+                    {
+                        continue;
+                    }
+                    game.SourceId = rgSource;
+                    if (game.GameId != "rg-legendsofruneterra")
+                    {
+                        for (int i = 0; i < game.GameActions.Count; i++)
+                        {
+                            if (game.GameActions[i].Name != null && game.GameActions[i].Name != string.Empty && game.GameActions[i].Name.ToLower().Contains("companion"))
+                            {
+                                game.GameActions.Remove(game.GameActions[i]);
+                            }
+                        }
+                    }
+                    PlayniteApi.Database.Games.Update(game);
+                }
+                settings.Settings.FirstStart = false;
+                SavePluginSettings(settings.Settings);
+            }
         }
 
         public void UpdateCompanionActions()
@@ -359,9 +408,11 @@ namespace RiotGamesLibrary
 
         public void UpdateSettings()
         {
-            settings.Settings.LeaguePath = RiotClient.LeagueInstalled ? RiotClient.LeagueInstallPath: "Not Installed";
+            settings.Settings.RiotClientPath = RiotClient.IsInstalled ? RiotClient.InstallationPath : "Not Installed";
+            settings.Settings.LeaguePath = RiotClient.LeagueInstalled ? RiotClient.LeagueInstallPath : "Not Installed";
             settings.Settings.ValorantPath = RiotClient.ValorantInstalled ? RiotClient.ValorantInstallPath : "Not Installed";
             settings.Settings.LORPath = RiotClient.LORInstalled ? RiotClient.LORInstallPath : "Not Installed";
+            SavePluginSettings(settings.Settings);
         }
 
         public override IEnumerable<InstallController> GetInstallActions(GetInstallActionsArgs args)

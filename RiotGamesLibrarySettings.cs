@@ -34,6 +34,7 @@ namespace RiotGamesLibrary
         private string _LORPath = RiotClient.LORInstalled ? RiotClient.LORInstallPath : "Not Installed";
         private bool _LeagueUseShortCompName = true;
         private bool _ValUseShortCompName = true;
+        private bool _FirstStart = true;
 
         public bool CloseRiotClient { get => _CloseRiotClient; set => SetValue(ref _CloseRiotClient, value); }
         public string RiotClientPath { get => _RiotClientPath; set => SetValue(ref _RiotClientPath, value);  }
@@ -45,6 +46,7 @@ namespace RiotGamesLibrary
         public ObservableCollection<CompanionApp> ValorantCompanions { get; set; } = new ObservableCollection<CompanionApp>();
         public bool LeagueUseShortCompName { get => _LeagueUseShortCompName; set => SetValue(ref _LeagueUseShortCompName, value); }
         public bool ValUseShortCompName { get => _ValUseShortCompName; set => SetValue(ref _ValUseShortCompName, value); }
+        public bool FirstStart { get => _FirstStart; set => SetValue(ref _FirstStart, value); }
     }
 
     public class RiotGamesLibrarySettingsViewModel : ObservableObject, ISettings
