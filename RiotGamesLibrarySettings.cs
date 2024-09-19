@@ -65,33 +65,6 @@ namespace RiotGamesLibrary
             }
         }
 
-        public RelayCommand<CompanionApp> RemoveLeagueCompCommand
-        {
-            get => new RelayCommand<CompanionApp>((a) =>
-            {
-                if (a == null) { return; }
-                if (a.ExePath != string.Empty)
-                {
-                    foreach (var game in Playnite.SDK.API.Instance.Database.Games)
-                    {
-                        if (game.PluginId != plugin.Id || game.GameId != "rg-leagueoflegends")
-                        {
-                            continue;
-                        }
-                        for (int i = 0; i < game.GameActions.Count; i++)
-                        {
-                            if (game.GameActions[i].Name == $"Open {a.ExeName}")
-                            {
-                                game.GameActions.Remove(game.GameActions[i]);
-                                Playnite.SDK.API.Instance.Database.Games.Update(game);
-                            }
-                        }
-                    }
-                }
-                Settings.LeagueCompanions.Remove(a);
-            });
-        }
-
         public RelayCommand<string> AddCompCommand
         {
             get => new RelayCommand<string>((a) =>
@@ -125,31 +98,46 @@ namespace RiotGamesLibrary
             });
         }
 
+        public RelayCommand<CompanionApp> RemoveLeagueCompCommand
+        {
+            get => new RelayCommand<CompanionApp>((a) =>
+            {
+                RemoveCompanion(a, GamesEnums.League);
+            });
+        }
+
         public RelayCommand<CompanionApp> RemoveValorantCompCommand
         {
             get => new RelayCommand<CompanionApp>((a) =>
             {
-                if (a == null) { return; }
-                if (a.ExePath != string.Empty)
+                RemoveCompanion(a, GamesEnums.Valorant);
+            });
+        }
+
+        private void RemoveCompanion(CompanionApp comp, GamesEnums rgame)
+        {
+            if (comp == null) { return; }
+            string gameId = (rgame == GamesEnums.League) ? "rg-leagueoflegends" : "rg-valorant";
+            var comps = (rgame == GamesEnums.League) ? Settings.LeagueCompanions : Settings.ValorantCompanions;
+            if (comp.ExePath != string.Empty)
+            {
+                foreach (var game in Playnite.SDK.API.Instance.Database.Games)
                 {
-                    foreach (var game in Playnite.SDK.API.Instance.Database.Games)
+                    if (game.PluginId != plugin.Id || game.GameId != gameId)
                     {
-                        if (game.PluginId != plugin.Id || game.GameId != "rg-valorant")
+                        continue;
+                    }
+                    for (int i = 0; i < game.GameActions.Count; i++)
+                    {
+                        if (game.GameActions[i].Name == $"Open {comp.ExeName}")
                         {
-                            continue;
-                        }
-                        for (int i = 0; i < game.GameActions.Count; i++)
-                        {
-                            if (game.GameActions[i].Name == $"Open {a.ExeName}")
-                            {
-                                game.GameActions.Remove(game.GameActions[i]);
-                                Playnite.SDK.API.Instance.Database.Games.Update(game);
-                            }
+                            game.GameActions.Remove(game.GameActions[i]);
+                            Playnite.SDK.API.Instance.Database.Games.Update(game);
                         }
                     }
                 }
-                Settings.ValorantCompanions.Remove(a);
-            });
+            }
+            comps.Remove(comp);
         }
 
         private Tuple<string, string, string> SelectApp()
