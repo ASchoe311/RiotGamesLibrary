@@ -82,6 +82,7 @@ namespace RiotGamesLibrary
                 {
                     Name = "League of Legends",
                     GameId = "rg-leagueoflegends",
+                    Source = new MetadataNameProperty("Riot Games"),
                     GameActions = new List<GameAction>
                     {
                         new GameAction()
@@ -104,6 +105,7 @@ namespace RiotGamesLibrary
                 {
                     Name = "Valorant",
                     GameId = "rg-valorant",
+                    Source = new MetadataNameProperty("Riot Games"),
                     GameActions = new List<GameAction>
                     {
                         new GameAction()
@@ -126,6 +128,7 @@ namespace RiotGamesLibrary
                 {
                     Name = "Legends of Runeterra",
                     GameId = "rg-legendsofruneterra",
+                    Source = new MetadataNameProperty("Riot Games"),
                     GameActions = new List<GameAction>
                     {
                         new GameAction()
