@@ -14,6 +14,6 @@ Download the latest .pext file from releases and open it using Playnite
 
 Upon installing the addon, refresh game library. The addon should auto-detect any existing installations of Riot Games properties.
 
-Open the Riot Games settings under the addons menu to select the executables for your companion apps and choose if they should or shouldn't close with their related games.\
+Open the Riot Games settings under the addons menu to select the executables for your companion apps and choose if they should or shouldn't close with their related games.
 
 To install games, the plugin will open the Riot client where you must manually select and install the desired game. This is due to Riot not providing a method to select a game to install via command line arguments or other automateable methods.
