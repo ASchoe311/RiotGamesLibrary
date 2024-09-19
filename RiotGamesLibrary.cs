@@ -127,7 +127,7 @@ namespace RiotGamesLibrary
                 {
                     Name = "Legends of Runeterra",
                     GameId = "rg-legendsofruneterra",
-                    Source = new MetadataNameProperty("Rios"),
+                    Source = new MetadataNameProperty("Riot Games"),
                     GameActions = new List<GameAction>
                     {
                         new GameAction()
