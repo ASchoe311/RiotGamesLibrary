@@ -69,6 +69,7 @@ namespace RiotGamesLibrary
         {
             get => new RelayCommand<CompanionApp>((a) =>
             {
+                if (a == null) { return; }
                 if (a.ExePath != string.Empty)
                 {
                     foreach (var game in Playnite.SDK.API.Instance.Database.Games)
@@ -128,6 +129,7 @@ namespace RiotGamesLibrary
         {
             get => new RelayCommand<CompanionApp>((a) =>
             {
+                if (a == null) { return; }
                 if (a.ExePath != string.Empty)
                 {
                     foreach (var game in Playnite.SDK.API.Instance.Database.Games)
