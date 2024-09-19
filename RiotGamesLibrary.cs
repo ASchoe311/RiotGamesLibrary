@@ -175,14 +175,14 @@ namespace RiotGamesLibrary
                                 }
                                 else
                                 {
-                                    logger.Info($"Removing game action for {comp.ExeName}");
+                                    logger.Info($"Removing game action for {comp.ExeName} from League of Legends");
                                     game.GameActions.Remove(game.GameActions[i]);
                                 }
                             }
                         }
                         if (!actionExists && comp.GenerateAction)
                         {
-                            logger.Info($"Generating game action for {comp.ExeName}");
+                            logger.Info($"Generating game action for {comp.ExeName} for League of Legends");
                             game.GameActions.Add(new GameAction()
                             {
                                 Name = $"Open {comp.ExeName}",
@@ -214,14 +214,14 @@ namespace RiotGamesLibrary
                                 }
                                 else
                                 {
-                                    logger.Info($"Removing game action for {comp.ExeName}");
+                                    logger.Info($"Removing game action for {comp.ExeName} from Valorant");
                                     game.GameActions.Remove(game.GameActions[i]);
                                 }
                             }
                         }
                         if (!actionExists && comp.GenerateAction)
                         {
-                            logger.Info($"Generating game action for {comp.ExeName}");
+                            logger.Info($"Generating game action for {comp.ExeName} for Valorant");
                             game.GameActions.Add(new GameAction()
                             {
                                 Name = $"Open {comp.ExeName}",
@@ -292,7 +292,7 @@ namespace RiotGamesLibrary
                 {
                     if (comp.CompanionEnabled && comp.CloseWithGame)
                     {
-                        logger.Info($"Trying to stop companion app: {comp.ExeName}");
+                        logger.Info($"Trying to stop League of Legends companion app: {comp.ExeName}");
                         if (Path.GetFileNameWithoutExtension(comp.ExePath) == "OverwolfLauncher")
                         {
                             foreach (string owProc in overwolfProcs)
@@ -321,7 +321,7 @@ namespace RiotGamesLibrary
                 {
                     if (comp.CompanionEnabled && comp.CloseWithGame)
                     {
-                        logger.Info($"Trying to stop companion app: {comp.ExeName}");
+                        logger.Info($"Trying to stop Valorant companion app: {comp.ExeName}");
                         if (Path.GetFileNameWithoutExtension(comp.ExePath) == "OverwolfLauncher")
                         {
                             foreach (string owProc in overwolfProcs)
