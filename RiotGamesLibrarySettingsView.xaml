@@ -38,24 +38,58 @@
                     <Run Text="League of Legends Install Path:"/>
                     <Run Text="{Binding Settings.LeaguePath, Mode=OneWay}"/>
                 </TextBlock>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="League Companion App Executable (Optional):" Grid.Row="0" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Settings.LeagueCompanionExe, UpdateSourceTrigger=PropertyChanged}" x:Name="LeagueCompanionPathTxt" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
-                    <Button Name="ChooseLeagueCompanionPath" Content="&#xec5b;" Click="ChooseLeagueCompanionBtn" Grid.Row="0" Grid.Column="2" Margin="5,0,0,5" FontFamily="{DynamicResource FontIcoFont}"/>
-                    <TextBlock Text="Companion app launch arguments:" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Settings.LeagueCompanionExeArgs, UpdateSourceTrigger=PropertyChanged}" x:Name="LeagueCompanionPathArgsTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
-                </Grid>
-                <CheckBox Content="Close League Companion when League Is Closed" IsChecked="{Binding Settings.CloseCompanionWithLeague}" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                <CheckBox Content="Generate a game action to open companion app" IsChecked="{Binding Settings.MakeLeagueCompAppAction}" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <DockPanel Margin="10">
+                    <TextBlock DockPanel.Dock="Top" Text="Specify companion applications for League of Legends" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                    <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
+                        <Button Content="Add" Margin="0,10,0,0" DockPanel.Dock="Left" Command="{Binding AddCompCommand}" CommandParameter="rg-leagueoflegends" />
+                        <Button Content="Remove" Margin="10,10,0,0" DockPanel.Dock="Left" Command="{Binding RemoveLeagueCompCommand}" CommandParameter="{Binding SelectedItem, ElementName=GridLeagueCompanions}"/>
+                    </DockPanel>
+                    <DataGrid Name="GridLeagueCompanions" ItemsSource="{Binding Settings.LeagueCompanions}" DockPanel.Dock="Top"
+                              CanUserAddRows="False" CanUserResizeRows="False" AutoGenerateColumns="False" GridLinesVisibility="None" SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Enabled" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding CompanionEnabled, UpdateSourceTrigger=PropertyChanged}" 
+                                                  HorizontalAlignment="Center" ToolTip="If checked, the companion app will launch when League is launched from Playnite"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Auto-Close" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding CloseWithGame, UpdateSourceTrigger=PropertyChanged}" 
+                                                  HorizontalAlignment="Center" ToolTip="If checked, the companion app will close when League is closed" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Make Game Action" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding GenerateAction, UpdateSourceTrigger=PropertyChanged}" 
+                                                  HorizontalAlignment="Center" ToolTip="If checked, a game action will be available to directly launch the companion app" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Companion App Executable" MinWidth="150" MaxWidth="250">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ExePath, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Launch Arguments" MinWidth="150" MaxWidth="250">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding LaunchArgs, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="*If the app runs on Overwolf it will show up as the Overwolf executable with launch arguments" TextWrapping="Wrap" Margin="10,0,0,0"/>
+                <TextBlock DockPanel.Dock="Top" Text="*Hover over a checkbox to see a tooltip explaining what it does" TextWrapping="Wrap" Margin="10,0,0,0"/>
             </StackPanel>
         </TabItem>
         <TabItem Header="Valorant Settings">
@@ -64,24 +98,58 @@
                     <Run Text="Valorant Install Path:"/>
                     <Run Text="{Binding Settings.ValorantPath, Mode=OneWay}"/>
                 </TextBlock>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Valorant Companion App Executable (Optional):" Grid.Row="0" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Settings.ValorantCompanionExe, UpdateSourceTrigger=PropertyChanged}" x:Name="ValorantCompanionPathTxt" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
-                    <Button Name="ChooseValorantCompanionPath" Content="&#xec5b;" Click="ChooseValorantCompanionBtn" Grid.Row="0" Grid.Column="3" Margin="5,0,0,5" FontFamily="{DynamicResource FontIcoFont}"/>
-                    <TextBlock Text="Companion app launch arguments:" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Settings.ValorantCompanionExeArgs, UpdateSourceTrigger=PropertyChanged}" x:Name="ValorantCompanionPathArgsTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center"/>
-                </Grid>
-                <CheckBox Content="Close Valorant Companion when Valorant Is Closed" IsChecked="{Binding Settings.CloseCompanionWithValorant}" Grid.Row="3" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                <CheckBox Content="Generate a game action to open companion app" IsChecked="{Binding Settings.MakeValorantCompAppAction}" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <DockPanel Margin="10">
+                    <TextBlock DockPanel.Dock="Top" Text="Specify companion applications for Valorant" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                    <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
+                        <Button Content="Add" Margin="0,10,0,0" DockPanel.Dock="Left" Command="{Binding AddCompCommand}" CommandParameter="rg-valorant" />
+                        <Button Content="Remove" Margin="10,10,0,0" DockPanel.Dock="Left" Command="{Binding RemoveValorantCompCommand}" CommandParameter="{Binding SelectedItem, ElementName=GridValorantCompanions}"/>
+                    </DockPanel>
+                    <DataGrid Name="GridValorantCompanions" ItemsSource="{Binding Settings.ValorantCompanions}" DockPanel.Dock="Top"
+              CanUserAddRows="False" CanUserResizeRows="False" AutoGenerateColumns="False" GridLinesVisibility="None" SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Enabled" Width="Auto" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding CompanionEnabled, UpdateSourceTrigger=PropertyChanged}" 
+                                  HorizontalAlignment="Center" ToolTip="If checked, the companion app will launch when Valorant is launched from Playnite"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Auto-Close" Width="Auto" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding CloseWithGame, UpdateSourceTrigger=PropertyChanged}" 
+                                  HorizontalAlignment="Center" ToolTip="If checked, the companion app will close when Valorant is closed" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Make Game Action" Width="Auto" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding GenerateAction, UpdateSourceTrigger=PropertyChanged}" 
+                                  HorizontalAlignment="Center" ToolTip="If checked, a game action will be available to directly launch the companion app" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Companion App Executable" MinWidth="150" MaxWidth="250">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ExePath, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Launch Arguments" MinWidth="150" MaxWidth="250">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding LaunchArgs, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="*If the app runs on Overwolf it will show up as the Overwolf executable with launch arguments" TextWrapping="Wrap" Margin="10,0,0,0"/>
+                <TextBlock DockPanel.Dock="Top" Text="*Hover over a checkbox to see a tooltip explaining what it does" TextWrapping="Wrap" Margin="10,0,0,0"/>
             </StackPanel>
         </TabItem>
     </TabControl>

@@ -142,24 +142,31 @@ namespace RiotGamesLibrary
             StartUninstallWatcher();
             var playniteApi = Playnite.SDK.API.Instance;
             MessageBoxOption selected;
-            if (Game.GameId == "rg-leagueoflegends")
-            {
-                selected = playniteApi.Dialogs.ShowMessage(
-                    $"Which version of {Game.Name} would you like to uninstall?",
-                    $"Uninstalling {Game.Name}",
-                    MessageBoxImage.Exclamation,
-                    leagueBoxOptions
-                );
-            }
-            else
-            {
-                selected = playniteApi.Dialogs.ShowMessage(
+            //Unused code, for now
+            //if (Game.GameId == "rg-leagueoflegends")
+            //{
+            //    selected = playniteApi.Dialogs.ShowMessage(
+            //        $"Which version of {Game.Name} would you like to uninstall?",
+            //        $"Uninstalling {Game.Name}",
+            //        MessageBoxImage.Exclamation,
+            //        leagueBoxOptions
+            //    );
+            //}
+            //else
+            //{
+            //    selected = playniteApi.Dialogs.ShowMessage(
+            //        $"Confirm uninstall of {Game.Name}?",
+            //        $"Uninstalling {Game.Name}",
+            //        MessageBoxImage.Exclamation,
+            //        otherBoxOptions
+            //    );
+            //}
+            selected = playniteApi.Dialogs.ShowMessage(
                     $"Confirm uninstall of {Game.Name}?",
                     $"Uninstalling {Game.Name}",
                     MessageBoxImage.Exclamation,
                     otherBoxOptions
                 );
-            }
             if (selected.IsCancel)
             {
                 Dispose();
@@ -167,12 +174,14 @@ namespace RiotGamesLibrary
             }
             else if (selected.IsDefault)
             {
+                logger.Info("Stopping Riot Client Services prior to game uninstall");
                 Process proc = Process.GetProcessesByName("Riot Client").FirstOrDefault();
                 if (proc != null) { proc.Kill(); }
                 proc = Process.GetProcessesByName("RiotClientServices").FirstOrDefault();
                 if (proc != null) { proc.Kill(); }
                 Process.Start(RiotClient.ClientExecPath, (GetUninstallStringFromGameID() + " --uninstall-patchline=live"));
             }
+            //Unused code, for now
             else
             {
                 Process proc = Process.GetProcessesByName("Riot Client").FirstOrDefault();
