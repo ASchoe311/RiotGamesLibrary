@@ -52,7 +52,6 @@ namespace RiotGamesLibrary
             {
                 HasSettings = true
             };
-            settings.Settings.RiotClientPath = RiotClient.InstallationPath;
             UpdateSettings();
         }
 
@@ -82,6 +81,7 @@ namespace RiotGamesLibrary
                 {
                     Name = "League of Legends",
                     GameId = "rg-leagueoflegends",
+                    Source = new MetadataNameProperty("Riot Games"),
                     GameActions = new List<GameAction>
                     {
                         new GameAction()
@@ -104,6 +104,7 @@ namespace RiotGamesLibrary
                 {
                     Name = "Valorant",
                     GameId = "rg-valorant",
+                    Source = new MetadataNameProperty("Riot Games"),
                     GameActions = new List<GameAction>
                     {
                         new GameAction()
@@ -126,6 +127,7 @@ namespace RiotGamesLibrary
                 {
                     Name = "Legends of Runeterra",
                     GameId = "rg-legendsofruneterra",
+                    Source = new MetadataNameProperty("Riot Games"),
                     GameActions = new List<GameAction>
                     {
                         new GameAction()
@@ -145,33 +147,57 @@ namespace RiotGamesLibrary
                     Icon = new MetadataFile(RiotClient.LORIcon)
                 }
             };
-            if (settings.Settings.MakeLeagueCompAppAction && settings.Settings.LeagueCompanionExe != string.Empty)
-            {
-                gameList[0].GameActions.Add(new GameAction()
-                {
-                    Name = "Open Companion App",
-                    Type = GameActionType.File,
-                    Path = settings.Settings.LeagueCompanionExe,
-                    Arguments = settings.Settings.LeagueCompanionExeArgs,
-                    WorkingDir = Path.GetDirectoryName(settings.Settings.LeagueCompanionExe),
-                    TrackingMode = TrackingMode.Default,
-                    IsPlayAction = false
-                });
-            }
-            if (settings.Settings.MakeValorantCompAppAction && settings.Settings.ValorantCompanionExe != string.Empty)
-            {
-                gameList[0].GameActions.Add(new GameAction()
-                {
-                    Name = "Open Companion App",
-                    Type = GameActionType.File,
-                    Path = settings.Settings.ValorantCompanionExe,
-                    Arguments = settings.Settings.ValorantCompanionExeArgs,
-                    WorkingDir = Path.GetDirectoryName(settings.Settings.ValorantCompanionExe),
-                    TrackingMode = TrackingMode.Default,
-                    IsPlayAction = false
-                });
-            }
             return gameList;
+        }
+
+        //REMOVE AFTER A FEW UPDATES
+        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
+        {
+            base.OnApplicationStarted(args);
+            if (settings.Settings.FirstStart)
+            {
+                logger.Info("Detected first run of new plugin version, ensuring sources are properly set and clearing outdated companion actions");
+                Guid rgSource = Guid.NewGuid();
+                bool srcFound = false;
+                foreach (var source in PlayniteApi.Database.Sources)
+                {
+                    //logger.Debug($"Source with id {source.Id} is {source.Name}");
+                    if (source.Name == "Riot Games")
+                    {
+                        rgSource = source.Id;
+                        srcFound = true;
+                    }
+
+                }
+                if (!srcFound)
+                {
+                    GameSource rg = new GameSource("Riot Games");
+                    rgSource = rg.Id;
+                    PlayniteApi.Database.Sources.Add(rg);
+                    PlayniteApi.Database.Sources.Update(rg);
+                }
+                foreach (var game in PlayniteApi.Database.Games)
+                {
+                    if (game.PluginId != Id)
+                    {
+                        continue;
+                    }
+                    game.SourceId = rgSource;
+                    if (game.GameId != "rg-legendsofruneterra")
+                    {
+                        for (int i = 0; i < game.GameActions.Count; i++)
+                        {
+                            if (game.GameActions[i].Name != null && game.GameActions[i].Name != string.Empty && game.GameActions[i].Name.ToLower().Contains("companion"))
+                            {
+                                game.GameActions.Remove(game.GameActions[i]);
+                            }
+                        }
+                    }
+                    PlayniteApi.Database.Games.Update(game);
+                }
+                settings.Settings.FirstStart = false;
+                SavePluginSettings(settings.Settings);
+            }
         }
 
         public void UpdateCompanionActions()
@@ -185,69 +211,79 @@ namespace RiotGamesLibrary
                 }
                 if (game.GameId == "rg-leagueoflegends")
                 {
-                    if (settings.Settings.LeagueCompanionExe != string.Empty)
+                    foreach (var comp in settings.Settings.LeagueCompanions)
                     {
-                        if (game.GameActions.Count == 2)
+                        bool actionExists = false;
+                        for (int i = 0; i < game.GameActions.Count; i++)
                         {
-                            var action = game.GameActions[1];
-                            action.Path = settings.Settings.LeagueCompanionExe;
-                            action.Arguments = settings.Settings.LeagueCompanionExeArgs;
-                            action.WorkingDir = Path.GetDirectoryName(settings.Settings.LeagueCompanionExe);
-                        }
-                        else if (settings.Settings.MakeLeagueCompAppAction)
-                        {
-                            var action = new GameAction()
+                            if (game.GameActions[i].Name == $"Open {comp.ExeName}")
                             {
-                                Name = "Open Companion App",
+                                actionExists = true;
+                                if (comp.GenerateAction)
+                                {
+                                    game.GameActions[i].Path = comp.ExePath;
+                                    game.GameActions[i].Arguments = comp.LaunchArgs;
+                                    game.GameActions[i].WorkingDir = Path.GetDirectoryName(comp.ExePath);
+                                }
+                                else
+                                {
+                                    logger.Info($"Removing game action for {comp.ExeName} from League of Legends");
+                                    game.GameActions.Remove(game.GameActions[i]);
+                                }
+                            }
+                        }
+                        if (!actionExists && comp.GenerateAction)
+                        {
+                            logger.Info($"Generating game action for {comp.ExeName} for League of Legends");
+                            game.GameActions.Add(new GameAction()
+                            {
+                                Name = $"Open {comp.ExeName}",
                                 Type = GameActionType.File,
-                                Path = settings.Settings.LeagueCompanionExe,
-                                Arguments = settings.Settings.LeagueCompanionExeArgs,
-                                WorkingDir = Path.GetDirectoryName(settings.Settings.LeagueCompanionExe),
+                                Path = comp.ExePath,
+                                Arguments = comp.LaunchArgs,
+                                WorkingDir = Path.GetDirectoryName(comp.ExePath),
                                 TrackingMode = TrackingMode.Default,
                                 IsPlayAction = false
-                            };
-                            game.GameActions.Add(action);
-                        }
-                    }
-                    if (settings.Settings.LeagueCompanionExe == string.Empty || !settings.Settings.MakeLeagueCompAppAction)
-                    {
-                        if (game.GameActions.Count == 2)
-                        {
-                            game.GameActions.Remove(game.GameActions.ElementAt(1));
+                            });
                         }
                     }
                 }
                 if (game.GameId == "rg-valorant")
                 {
-                    if (settings.Settings.ValorantCompanionExe != string.Empty)
+                    foreach (var comp in settings.Settings.ValorantCompanions)
                     {
-                        if (game.GameActions.Count == 2)
+                        bool actionExists = false;
+                        for (int i = 0; i < game.GameActions.Count; i++)
                         {
-                            var action = game.GameActions[1];
-                            action.Path = settings.Settings.ValorantCompanionExe;
-                            action.Arguments = settings.Settings.ValorantCompanionExeArgs;
-                            action.WorkingDir = Path.GetDirectoryName(settings.Settings.ValorantCompanionExe);
-                        }
-                        else if (settings.Settings.MakeValorantCompAppAction)
-                        {
-                            var action = new GameAction()
+                            if (game.GameActions[i].Name == $"Open {comp.ExeName}")
                             {
-                                Name = "Open Companion App",
+                                actionExists = true;
+                                if (comp.GenerateAction)
+                                {
+                                    game.GameActions[i].Path = comp.ExePath;
+                                    game.GameActions[i].Arguments = comp.LaunchArgs;
+                                    game.GameActions[i].WorkingDir = Path.GetDirectoryName(comp.ExePath);
+                                }
+                                else
+                                {
+                                    logger.Info($"Removing game action for {comp.ExeName} from Valorant");
+                                    game.GameActions.Remove(game.GameActions[i]);
+                                }
+                            }
+                        }
+                        if (!actionExists && comp.GenerateAction)
+                        {
+                            logger.Info($"Generating game action for {comp.ExeName} for Valorant");
+                            game.GameActions.Add(new GameAction()
+                            {
+                                Name = $"Open {comp.ExeName}",
                                 Type = GameActionType.File,
-                                Path = settings.Settings.ValorantCompanionExe,
-                                Arguments = settings.Settings.ValorantCompanionExeArgs,
-                                WorkingDir = Path.GetDirectoryName(settings.Settings.ValorantCompanionExe),
+                                Path = comp.ExePath,
+                                Arguments = comp.LaunchArgs,
+                                WorkingDir = Path.GetDirectoryName(comp.ExePath),
                                 TrackingMode = TrackingMode.Default,
                                 IsPlayAction = false
-                            };
-                            game.GameActions.Add(action);
-                        }
-                    }
-                    if (settings.Settings.ValorantCompanionExe == string.Empty || !settings.Settings.MakeValorantCompAppAction)
-                    {
-                        if (game.GameActions.Count == 2)
-                        {
-                            game.GameActions.Remove(game.GameActions.ElementAt(1));
+                            });
                         }
                     }
                 }
@@ -258,41 +294,33 @@ namespace RiotGamesLibrary
         public override void OnGameStarted(OnGameStartedEventArgs args)
         {
             //logger.Debug($"launching game with id {args.Game.Id}");
+            base.OnGameStarted(args);
             if (args.Game.PluginId != Id)
             {
                 return;
             }
             if (args.Game.GameId == "rg-leagueoflegends")
             {
-                if (settings.Settings.LeagueCompanionExe != string.Empty)
+                foreach (var comp in settings.Settings.LeagueCompanions)
                 {
-                    logger.Debug($"Trying to run companion at {settings.Settings.LeagueCompanionExe}");
-                    if (settings.Settings.LeagueCompanionExeArgs != string.Empty)
+                    if (comp.CompanionEnabled) 
                     {
-                        Process.Start(settings.Settings.LeagueCompanionExe, settings.Settings.LeagueCompanionExeArgs);
-                    }
-                    else
-                    {
-                        Process.Start(settings.Settings.LeagueCompanionExe);
+                        logger.Info($"Starting League of Legends companion app: {comp.ExeName}");
+                        Process.Start(comp.ExePath, comp.LaunchArgs);
                     }
                 }
             }
             if (args.Game.GameId == "rg-valorant")
             {
-                if (settings.Settings.ValorantCompanionExe != string.Empty)
+                foreach (var comp in settings.Settings.ValorantCompanions)
                 {
-                    logger.Debug($"Trying to run companion at {settings.Settings.ValorantCompanionExe}");
-                    if (settings.Settings.ValorantCompanionExeArgs != string.Empty)
+                    if (comp.CompanionEnabled)
                     {
-                        Process.Start(settings.Settings.ValorantCompanionExe, settings.Settings.ValorantCompanionExeArgs);
-                    }
-                    else
-                    {
-                        Process.Start(settings.Settings.ValorantCompanionExe);
+                        logger.Info($"Starting Valorant companion app: {comp.ExeName}");
+                        Process.Start(comp.ExePath, comp.LaunchArgs); 
                     }
                 }
             }
-            base.OnGameStarted(args);
         }
 
         private static List<string> overwolfProcs = new List<string>()
@@ -305,82 +333,86 @@ namespace RiotGamesLibrary
 
         public override void OnGameStopped(OnGameStoppedEventArgs args)
         {
+            base.OnGameStopped(args);
             if (args.Game.PluginId != Id)
             {
                 return;
             }
             if (args.Game.GameId == "rg-leagueoflegends")
             {
-                if (settings.Settings.CloseCompanionWithLeague && settings.Settings.LeagueCompanionExe != string.Empty)
+                foreach (var comp in settings.Settings.LeagueCompanions)
                 {
-                    if (Path.GetFileNameWithoutExtension(settings.Settings.LeagueCompanionExe) == "OverwolfLauncher")
+                    if (comp.CompanionEnabled && comp.CloseWithGame)
                     {
-                        logger.Debug("Stopping overwolf processes");
-                        foreach (string owProc in overwolfProcs)
+                        logger.Info($"Trying to stop League of Legends companion app: {comp.ExeName}");
+                        if (Path.GetFileNameWithoutExtension(comp.ExePath) == "OverwolfLauncher")
                         {
-                            var procs = Process.GetProcessesByName(owProc);
-                            foreach (var proc in procs)
+                            foreach (string owProc in overwolfProcs)
                             {
-                                if (proc != null) { proc.Kill(); }
+                                var procs = Process.GetProcessesByName(owProc);
+                                foreach (var proc in procs)
+                                {
+                                    if (proc != null) { proc.Kill(); }
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        logger.Debug($"Trying to stop companion by name {Path.GetFileNameWithoutExtension(settings.Settings.LeagueCompanionExe)}");
-                        Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(settings.Settings.LeagueCompanionExe));
-                        foreach (Process proc in procs)
+                        else
                         {
-                            proc.Kill();
+                            Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(comp.ExePath));
+                            foreach (Process proc in procs)
+                            {
+                                proc.Kill();
+                            }
                         }
-
                     }
                 }
             }
             if (args.Game.GameId == "rg-valorant")
             {
-                if (settings.Settings.CloseCompanionWithValorant && settings.Settings.ValorantCompanionExe != string.Empty)
+                foreach (var comp in settings.Settings.ValorantCompanions)
                 {
-
-                    if (Path.GetFileNameWithoutExtension(settings.Settings.ValorantCompanionExe) == "OverwolfLauncher")
+                    if (comp.CompanionEnabled && comp.CloseWithGame)
                     {
-                        logger.Debug("Stopping overwolf processes");
-                        foreach (string owProc in overwolfProcs)
+                        logger.Info($"Trying to stop Valorant companion app: {comp.ExeName}");
+                        if (Path.GetFileNameWithoutExtension(comp.ExePath) == "OverwolfLauncher")
                         {
-                            var procs = Process.GetProcessesByName(owProc);
-                            foreach (var proc in procs)
+                            foreach (string owProc in overwolfProcs)
                             {
-                                if (proc != null) { proc.Kill(); }
+                                var procs = Process.GetProcessesByName(owProc);
+                                foreach (var proc in procs)
+                                {
+                                    if (proc != null) { proc.Kill(); }
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        logger.Debug($"Trying to stop companion by name {Path.GetFileNameWithoutExtension(settings.Settings.ValorantCompanionExe)}");
-                        Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(settings.Settings.ValorantCompanionExe));
-                        foreach (Process proc in procs)
+                        else
                         {
-                            proc.Kill();
+                            Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(comp.ExePath));
+                            foreach (Process proc in procs)
+                            {
+                                proc.Kill();
+                            }
                         }
                     }
                 }
             }
             if (settings.Settings.CloseRiotClient)
             {
-                logger.Debug($"Trying to stop Riot Client");
+                logger.Info($"Trying to stop Riot Client");
                 Process proc = Process.GetProcessesByName("Riot Client").FirstOrDefault();
                 if (proc != null) { proc.Kill(); }
                 proc = Process.GetProcessesByName("RiotClientServices").FirstOrDefault();
                 if (proc != null) { proc.Kill(); }
             }
-            base.OnGameStopped(args);
         }
 
         public void UpdateSettings()
         {
-            settings.Settings.LeaguePath = RiotClient.LeagueInstalled ? RiotClient.LeagueInstallPath: "Not Installed";
+            settings.Settings.RiotClientPath = RiotClient.IsInstalled ? RiotClient.InstallationPath : "Not Installed";
+            settings.Settings.LeaguePath = RiotClient.LeagueInstalled ? RiotClient.LeagueInstallPath : "Not Installed";
             settings.Settings.ValorantPath = RiotClient.ValorantInstalled ? RiotClient.ValorantInstallPath : "Not Installed";
             settings.Settings.LORPath = RiotClient.LORInstalled ? RiotClient.LORInstallPath : "Not Installed";
+            SavePluginSettings(settings.Settings);
         }
 
         public override IEnumerable<InstallController> GetInstallActions(GetInstallActionsArgs args)
