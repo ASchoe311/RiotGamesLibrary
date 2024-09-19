@@ -3,7 +3,7 @@ Packages:
   - Version: 2.1.0
     RequiredApiVersion: 6.2.0
     ReleaseDate: 2024-09-19
-    PackageUrl: https://github.com/ASchoe311/RiotGamesLibrary/releases/download/v2.0/RiotGamesLibrary_91d13c6f-63d3-42ed-a100-6f811a8387ea_2_0.pext
+    PackageUrl: https://github.com/ASchoe311/RiotGamesLibrary/releases/download/v2.1.0/RiotGamesLibrary_91d13c6f-63d3-42ed-a100-6f811a8387ea_2_1_0.pext
     Changelog:
           - Added the ability to attach as many companion apps to League and Valorant as you want
           - Completely revamped settings
