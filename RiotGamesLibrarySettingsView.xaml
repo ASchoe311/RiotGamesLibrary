@@ -47,7 +47,7 @@
                     <DataGrid Name="GridLeagueCompanions" ItemsSource="{Binding Settings.LeagueCompanions}" DockPanel.Dock="Top"
                               CanUserAddRows="False" CanUserResizeRows="False" AutoGenerateColumns="False" GridLinesVisibility="None" SelectionMode="Single">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Enabled">
+                            <DataGridTemplateColumn Header="Enabled" Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding CompanionEnabled, UpdateSourceTrigger=PropertyChanged}" 
@@ -55,7 +55,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Auto-Close">
+                            <DataGridTemplateColumn Header="Auto-Close" Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding CloseWithGame, UpdateSourceTrigger=PropertyChanged}" 
@@ -63,22 +63,22 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Create Game Action">
+                            <DataGridTemplateColumn Header="Make Game Action" Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding GenerateAction, UpdateSourceTrigger=PropertyChanged}" 
-                                                  HorizontalAlignment="Center" ToolTip="If checked, a game action will be generated to directly launch the companion app" />
+                                                  HorizontalAlignment="Center" ToolTip="If checked, a game action will be available to directly launch the companion app" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Companion App Executable" MinWidth="150" MaxWidth="265">
+                            <DataGridTemplateColumn Header="Companion App Executable" MinWidth="150" MaxWidth="250">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding ExePath, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Launch Arguments" MinWidth="150" MaxWidth="265">
+                            <DataGridTemplateColumn Header="Launch Arguments" MinWidth="150" MaxWidth="250">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding LaunchArgs, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
@@ -107,7 +107,7 @@
                     <DataGrid Name="GridValorantCompanions" ItemsSource="{Binding Settings.ValorantCompanions}" DockPanel.Dock="Top"
               CanUserAddRows="False" CanUserResizeRows="False" AutoGenerateColumns="False" GridLinesVisibility="None" SelectionMode="Single">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Enabled">
+                            <DataGridTemplateColumn Header="Enabled" Width="Auto" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding CompanionEnabled, UpdateSourceTrigger=PropertyChanged}" 
@@ -115,7 +115,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Auto-Close">
+                            <DataGridTemplateColumn Header="Auto-Close" Width="Auto" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding CloseWithGame, UpdateSourceTrigger=PropertyChanged}" 
@@ -123,22 +123,22 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Create Game Action">
+                            <DataGridTemplateColumn Header="Make Game Action" Width="Auto" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding GenerateAction, UpdateSourceTrigger=PropertyChanged}" 
-                                  HorizontalAlignment="Center" ToolTip="If checked, a game action will be generated to directly launch the companion app" />
+                                  HorizontalAlignment="Center" ToolTip="If checked, a game action will be available to directly launch the companion app" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Companion App Executable" MinWidth="150" MaxWidth="275">
+                            <DataGridTemplateColumn Header="Companion App Executable" MinWidth="150" MaxWidth="250">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding ExePath, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Launch Arguments" MinWidth="150" MaxWidth="275">
+                            <DataGridTemplateColumn Header="Launch Arguments" MinWidth="150" MaxWidth="250">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding LaunchArgs, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
