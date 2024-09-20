@@ -17,10 +17,10 @@ namespace RiotGamesLibrary
 {
     public enum GamesEnums
     {
-        League = 0,
-        LeaguePBE = 1,
-        Valorant = 2,
-        LoR = 3
+        League,
+        LeaguePBE,
+        Valorant,
+        LoR
     }
 
     public class RiotGamesLibrary : LibraryPlugin
@@ -55,32 +55,20 @@ namespace RiotGamesLibrary
             UpdateSettings();
         }
 
-        private string GetGameArgs(Enum game)
-        {
-            switch (game)
-            {
-                case GamesEnums.League:
-                    return "--launch-product=league_of_legends --launch-patchline=live";
-                case GamesEnums.LeaguePBE:
-                    return "--launch-product=league_of_legends --launch-patchline=pbe";
-                case GamesEnums.Valorant:
-                    return "--launch-product=valorant --launch-patchline=live";
-                case GamesEnums.LoR:
-                    return "--launch-product=bacon --launch-patchline=live";
-                default:
-                    return string.Empty;
-            }
-        }
+        private Tuple<string, string, string>[] rgGames = { 
+            Tuple.Create("rg-leagueoflegends", "League of Legends", "--launch-product=league_of_legends --launch-patchline=live"),
+            Tuple.Create("rg-valorant", "Valorant", "--launch-product=valorant --launch-patchline=live"),
+            Tuple.Create("rg-legendsofruneterra", "Legends of Runeterra", "--launch-product=bacon --launch-patchline=live")
+        }; 
 
         public override IEnumerable<GameMetadata> GetGames(LibraryGetGamesArgs args)
         {
-            // Return list of user's games.
-            List<GameMetadata> gameList = new List<GameMetadata>()
+            foreach (var game in rgGames)
             {
-                new GameMetadata()
+                yield return new GameMetadata()
                 {
-                    Name = "League of Legends",
-                    GameId = "rg-leagueoflegends",
+                    Name = game.Item2,
+                    GameId = game.Item1,
                     Source = new MetadataNameProperty("Riot Games"),
                     GameActions = new List<GameAction>
                     {
@@ -88,66 +76,28 @@ namespace RiotGamesLibrary
                         {
                             Type = GameActionType.File,
                             Path = RiotClient.ClientExecPath,
-                            Arguments = GetGameArgs(GamesEnums.League),
+                            Arguments = game.Item3,
                             WorkingDir = RiotClient.InstallationPath,
                             TrackingMode = TrackingMode.Directory,
-                            TrackingPath = RiotClient.LeagueInstallPath,
+                            TrackingPath = RiotGame.InstallPath(game.Item1),
                             IsPlayAction = true
                         }
                     },
                     Platforms = new HashSet<MetadataProperty> { new MetadataNameProperty("PC (Windows)") },
-                    IsInstalled = RiotClient.LeagueInstalled,
-                    InstallDirectory = RiotClient.LeagueInstallPath,
-                    Icon = new MetadataFile(RiotClient.LeagueIcon)
-                },
-                new GameMetadata()
-                {
-                    Name = "Valorant",
-                    GameId = "rg-valorant",
-                    Source = new MetadataNameProperty("Riot Games"),
-                    GameActions = new List<GameAction>
-                    {
-                        new GameAction()
-                        {
-                            Type = GameActionType.File,
-                            Path = RiotClient.ClientExecPath,
-                            Arguments = GetGameArgs(GamesEnums.Valorant),
-                            WorkingDir = RiotClient.InstallationPath,
-                            TrackingMode = TrackingMode.Directory,
-                            TrackingPath = RiotClient.ValorantInstallPath,
-                            IsPlayAction = true
-                        }
-                    },
-                    Platforms = new HashSet<MetadataProperty> { new MetadataNameProperty("PC (Windows)") },
-                    IsInstalled = RiotClient.ValorantInstalled,
-                    InstallDirectory = RiotClient.ValorantInstallPath,
-                    Icon = new MetadataFile(RiotClient.ValorantIcon)
-                },
-                new GameMetadata()
-                {
-                    Name = "Legends of Runeterra",
-                    GameId = "rg-legendsofruneterra",
-                    Source = new MetadataNameProperty("Riot Games"),
-                    GameActions = new List<GameAction>
-                    {
-                        new GameAction()
-                        {
-                            Type = GameActionType.File,
-                            Path = RiotClient.ClientExecPath,
-                            Arguments = GetGameArgs(GamesEnums.LoR),
-                            WorkingDir = RiotClient.InstallationPath,
-                            TrackingMode = TrackingMode.Directory,
-                            TrackingPath = RiotClient.LORInstallPath,
-                            IsPlayAction = true
-                        }
-                    },
-                    Platforms = new HashSet<MetadataProperty> { new MetadataNameProperty("PC (Windows)") },
-                    IsInstalled = RiotClient.LORInstalled,
-                    InstallDirectory = RiotClient.LORInstallPath,
-                    Icon = new MetadataFile(RiotClient.LORIcon)
-                }
-            };
-            return gameList;
+                    IsInstalled = RiotGame.IsInstalled(game.Item1),
+                    InstallDirectory = RiotGame.InstallPath(game.Item1),
+                    Icon = new MetadataFile(RiotGame.Icons[game.Item1])
+                };
+            }
+        }
+
+        public override void OnGameInstalled(OnGameInstalledEventArgs args)
+        {
+            base.OnGameInstalled(args);
+            if (args.Game.PluginId == Id)
+            {
+                args.Game.GameActions[0].TrackingPath = RiotGame.InstallPath(args.Game.GameId);
+            }
         }
 
         //REMOVE AFTER A FEW UPDATES
@@ -409,9 +359,9 @@ namespace RiotGamesLibrary
         public void UpdateSettings()
         {
             settings.Settings.RiotClientPath = RiotClient.IsInstalled ? RiotClient.InstallationPath : "Not Installed";
-            settings.Settings.LeaguePath = RiotClient.LeagueInstalled ? RiotClient.LeagueInstallPath : "Not Installed";
-            settings.Settings.ValorantPath = RiotClient.ValorantInstalled ? RiotClient.ValorantInstallPath : "Not Installed";
-            settings.Settings.LORPath = RiotClient.LORInstalled ? RiotClient.LORInstallPath : "Not Installed";
+            settings.Settings.LeaguePath = RiotGame.IsInstalled("rg-leagueoflegends") ? RiotGame.InstallPath("rg-leagueoflegends") : "Not Installed";
+            settings.Settings.ValorantPath = RiotGame.IsInstalled("rg-valorant") ? RiotGame.InstallPath("rg-valorant") : "Not Installed";
+            settings.Settings.LORPath = RiotGame.IsInstalled("rg-legendsofruneterra") ? RiotGame.InstallPath("rg-legendsofruneterra") : "Not Installed";
             SavePluginSettings(settings.Settings);
         }
 

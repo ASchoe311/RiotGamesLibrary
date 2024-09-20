@@ -43,11 +43,11 @@ namespace RiotGamesLibrary
                     if (watcherToken.IsCancellationRequested) return;
                     if (Game.GameId == "rg-legendsofruneterra")
                     {
-                        if (File.Exists(Path.Combine(RiotClient.LORInstallPath, "LoR.exe")))
+                        if (File.Exists(Path.Combine(RiotGame.InstallPath("rg-legendsofruneterra"), "LoR.exe")))
                         {
                             var installInfo = new GameInstallationData()
                             {
-                                InstallDirectory = RiotClient.LORInstallPath
+                                InstallDirectory = RiotGame.InstallPath("rg-legendsofruneterra")
                             };
                             InvokeOnInstalled(new GameInstalledEventArgs(installInfo));
                             _plugin.UpdateSettings();
@@ -56,11 +56,11 @@ namespace RiotGamesLibrary
                     }
                     if (Game.GameId == "rg-leagueoflegends")
                     {
-                        if (File.Exists(Path.Combine(RiotClient.LeagueInstallPath, "LeagueClient.exe")))
+                        if (File.Exists(Path.Combine(RiotGame.InstallPath("rg-leagueoflegends"), "LeagueClient.exe")))
                         {
                             var installInfo = new GameInstallationData()
                             {
-                                InstallDirectory = RiotClient.LeagueInstallPath
+                                InstallDirectory = RiotGame.InstallPath("rg-leagueoflegends")
                             };
                             InvokeOnInstalled(new GameInstalledEventArgs(installInfo));
                             _plugin.UpdateSettings();
@@ -69,11 +69,11 @@ namespace RiotGamesLibrary
                     }
                     if (Game.GameId == "rg-valorant")
                     {
-                        if (File.Exists(Path.Combine(RiotClient.ValorantInstallPath, "VALORANT.exe")))
+                        if (File.Exists(Path.Combine(RiotGame.InstallPath("rg-valorant"), "VALORANT.exe")))
                         {
                             var installInfo = new GameInstallationData()
                             {
-                                InstallDirectory = RiotClient.ValorantInstallPath
+                                InstallDirectory = RiotGame.InstallPath("rg-valorant")
                             };
                             InvokeOnInstalled(new GameInstalledEventArgs(installInfo));
                             _plugin.UpdateSettings();
@@ -206,7 +206,7 @@ namespace RiotGamesLibrary
 
                 if (Game.GameId == "rg-leagueoflegends")
                 {
-                    if (!RiotClient.LeagueInstalled)
+                    if (!RiotGame.IsInstalled("rg-leagueoflegends"))
                     {
                         logger.Debug("Uninstall finished");
                         InvokeOnUninstalled(new GameUninstalledEventArgs());
@@ -217,7 +217,7 @@ namespace RiotGamesLibrary
                 }
                 if (Game.GameId == "rg-legendsofruneterra")
                 {
-                    if (!RiotClient.LORInstalled)
+                    if (!RiotGame.IsInstalled("rg-legendsofruneterra"))
                     {
                         logger.Debug("Uninstall finished");
                         InvokeOnUninstalled(new GameUninstalledEventArgs());
@@ -228,7 +228,7 @@ namespace RiotGamesLibrary
                 }
                 if (Game.GameId == "rg-valorant")
                 {
-                    if (!RiotClient.ValorantInstalled)
+                    if (!RiotGame.IsInstalled("rg-valorant"))
                     {
                         logger.Debug("Uninstall finished");
                         InvokeOnUninstalled(new GameUninstalledEventArgs());

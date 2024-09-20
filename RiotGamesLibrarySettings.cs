@@ -28,10 +28,10 @@ namespace RiotGamesLibrary
     {
         private bool _CloseRiotClient = true;
         private string _RiotClientPath = RiotClient.InstallationPath;
-        private string _LeaguePath = RiotClient.LeagueInstalled ? RiotClient.LeagueInstallPath : "Not Installed";
+        private string _LeaguePath = RiotGame.IsInstalled("rg-leagueoflegends") ? RiotGame.InstallPath("rg-leagueoflegends") : "Not Installed";
         private bool _LeaguePBE = false;
-        private string _ValorantPath = RiotClient.ValorantInstalled ? RiotClient.ValorantInstallPath : "Not Installed";
-        private string _LORPath = RiotClient.LORInstalled ? RiotClient.LORInstallPath : "Not Installed";
+        private string _ValorantPath = RiotGame.IsInstalled("rg-valorant") ? RiotGame.InstallPath("rg-valorant") : "Not Installed";
+        private string _LORPath = RiotGame.IsInstalled("rg-legendsofruneterra") ? RiotGame.InstallPath("rg-legendsofruneterra") : "Not Installed";
         private bool _LeagueUseShortCompName = true;
         private bool _ValUseShortCompName = true;
         private bool _FirstStart = true;
