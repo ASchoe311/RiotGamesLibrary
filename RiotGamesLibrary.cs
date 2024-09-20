@@ -4,6 +4,7 @@ using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -149,6 +150,25 @@ namespace RiotGamesLibrary
                     foreach (var comp in settings.Settings.LeagueCompanions)
                     {
                         bool actionExists = false;
+                        if (game.GameActions == null)
+                        {
+                            if (comp.GenerateAction)
+                            {
+                                logger.Info($"Generating game action for {comp.ExeName} for League of Legends");
+                                game.GameActions = new ObservableCollection<GameAction>();
+                                game.GameActions.Add(new GameAction()
+                                {
+                                    Name = $"Open {comp.ExeName}",
+                                    Type = GameActionType.File,
+                                    Path = comp.ExePath,
+                                    Arguments = comp.LaunchArgs,
+                                    WorkingDir = Path.GetDirectoryName(comp.ExePath),
+                                    TrackingMode = TrackingMode.Default,
+                                    IsPlayAction = false
+                                });
+                            }
+                            continue;
+                        }
                         for (int i = 0; i < game.GameActions.Count; i++)
                         {
                             if (game.GameActions[i].Name == $"Open {comp.ExeName}")
@@ -188,6 +208,25 @@ namespace RiotGamesLibrary
                     foreach (var comp in settings.Settings.ValorantCompanions)
                     {
                         bool actionExists = false;
+                        if (game.GameActions == null)
+                        {
+                            if (comp.GenerateAction)
+                            {
+                                logger.Info($"Generating game action for {comp.ExeName} for Valorant");
+                                game.GameActions = new ObservableCollection<GameAction>();
+                                game.GameActions.Add(new GameAction()
+                                {
+                                    Name = $"Open {comp.ExeName}",
+                                    Type = GameActionType.File,
+                                    Path = comp.ExePath,
+                                    Arguments = comp.LaunchArgs,
+                                    WorkingDir = Path.GetDirectoryName(comp.ExePath),
+                                    TrackingMode = TrackingMode.Default,
+                                    IsPlayAction = false
+                                });
+                            }
+                            continue;
+                        }
                         for (int i = 0; i < game.GameActions.Count; i++)
                         {
                             if (game.GameActions[i].Name == $"Open {comp.ExeName}")

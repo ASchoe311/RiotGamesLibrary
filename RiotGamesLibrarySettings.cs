@@ -129,14 +129,17 @@ namespace RiotGamesLibrary
                     {
                         continue;
                     }
+                    if (game.GameActions == null) { break; }
                     for (int i = 0; i < game.GameActions.Count; i++)
                     {
                         if (game.GameActions[i].Name == $"Open {comp.ExeName}")
                         {
                             game.GameActions.Remove(game.GameActions[i]);
                             Playnite.SDK.API.Instance.Database.Games.Update(game);
+                            break;
                         }
                     }
+                    break;
                 }
             }
             comps.Remove(comp);
@@ -220,6 +223,7 @@ namespace RiotGamesLibrary
             // Code executed when user decides to cancel any changes made since BeginEdit was called.
             // This method should revert any changes made to Option1 and CloseRiotClient.
             Settings = editingClone;
+            plugin.UpdateCompanionActions();
         }
 
         public void EndEdit()
