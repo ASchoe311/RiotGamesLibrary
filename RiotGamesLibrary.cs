@@ -55,48 +55,33 @@ namespace RiotGamesLibrary
             UpdateSettings();
         }
 
-        private Tuple<string, string, string>[] rgGames = { 
-            Tuple.Create("rg-leagueoflegends", "League of Legends", "--launch-product=league_of_legends --launch-patchline=live"),
-            Tuple.Create("rg-valorant", "Valorant", "--launch-product=valorant --launch-patchline=live"),
-            Tuple.Create("rg-legendsofruneterra", "Legends of Runeterra", "--launch-product=bacon --launch-patchline=live")
-        }; 
+        //private static Tuple<string, string, string>[] rgGames = { 
+        //    Tuple.Create("rg-leagueoflegends", "League of Legends", "--launch-product=league_of_legends --launch-patchline=live"),
+        //    Tuple.Create("rg-valorant", "Valorant", "--launch-product=valorant --launch-patchline=live"),
+        //    Tuple.Create("rg-legendsofruneterra", "Legends of Runeterra", "--launch-product=bacon --launch-patchline=live")
+        //};
+
+        private static Dictionary<string, Tuple<string, string>> rgGames = new Dictionary<string, Tuple<string, string>>()
+        {
+            { "rg-leagueoflegends", Tuple.Create("League of Legends", "--launch-product=league_of_legends --launch-patchline=live") },
+            { "rg-valorant", Tuple.Create("Valorant", "--launch-product=valorant --launch-patchline=live") },
+            { "rg-legendsofruneterra", Tuple.Create("Legends of Runeterra", "--launch-product=bacon --launch-patchline=live") }
+        };
 
         public override IEnumerable<GameMetadata> GetGames(LibraryGetGamesArgs args)
         {
-            foreach (var game in rgGames)
+            foreach (var game in rgGames.Keys)
             {
                 yield return new GameMetadata()
                 {
-                    Name = game.Item2,
-                    GameId = game.Item1,
+                    Name = rgGames[game].Item1,
+                    GameId = game,
                     Source = new MetadataNameProperty("Riot Games"),
-                    GameActions = new List<GameAction>
-                    {
-                        new GameAction()
-                        {
-                            Type = GameActionType.File,
-                            Path = RiotClient.ClientExecPath,
-                            Arguments = game.Item3,
-                            WorkingDir = RiotClient.InstallationPath,
-                            TrackingMode = TrackingMode.Directory,
-                            TrackingPath = RiotGame.InstallPath(game.Item1),
-                            IsPlayAction = true
-                        }
-                    },
                     Platforms = new HashSet<MetadataProperty> { new MetadataNameProperty("PC (Windows)") },
-                    IsInstalled = RiotGame.IsInstalled(game.Item1),
-                    InstallDirectory = RiotGame.InstallPath(game.Item1),
-                    Icon = new MetadataFile(RiotGame.Icons[game.Item1])
+                    IsInstalled = RiotGame.IsInstalled(game),
+                    InstallDirectory = RiotGame.InstallPath(game),
+                    Icon = new MetadataFile(RiotGame.Icons[game])
                 };
-            }
-        }
-
-        public override void OnGameInstalled(OnGameInstalledEventArgs args)
-        {
-            base.OnGameInstalled(args);
-            if (args.Game.PluginId == Id)
-            {
-                args.Game.GameActions[0].TrackingPath = RiotGame.InstallPath(args.Game.GameId);
             }
         }
 
@@ -384,6 +369,26 @@ namespace RiotGamesLibrary
 
             yield return new RiotUninstallController(args.Game, this);
         }
+
+        public override IEnumerable<PlayController> GetPlayActions(GetPlayActionsArgs args)
+        {
+            if (args.Game.PluginId != Id)
+            {
+                yield break;
+            }
+
+            var gameInfo = rgGames[args.Game.GameId];
+            AutomaticPlayController playController = new AutomaticPlayController(args.Game);
+            playController.Name = "Play";
+            playController.Path = RiotClient.ClientExecPath;
+            playController.Arguments = gameInfo.Item2;
+            playController.WorkingDir = RiotClient.InstallationPath;
+            playController.TrackingMode = TrackingMode.Directory;
+            playController.TrackingPath = RiotGame.InstallPath(args.Game.GameId);
+
+            yield return playController;
+        }
+
         public override ISettings GetSettings(bool firstRunSettings)
         {
             return settings;
