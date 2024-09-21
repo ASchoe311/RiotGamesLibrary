@@ -220,30 +220,18 @@ namespace RiotGamesLibrary
         {
             //logger.Debug($"launching game with id {args.Game.Id}");
             base.OnGameStarted(args);
-            if (args.Game.PluginId != Id)
+            if (args.Game.PluginId != Id || args.Game.GameId == "rg-legendsofruneterra")
             {
                 return;
             }
-            if (args.Game.GameId == "rg-leagueoflegends")
+            ObservableCollection<CompanionApp> companionsList = (args.Game.GameId == "rg-leagueoflegends") ? settings.Settings.LeagueCompanions : settings.Settings.ValorantCompanions;
+            string gameName = (args.Game.GameId == "rg-leagueoflegends") ? "League of Legends" : "Valorant";
+            foreach (var comp in companionsList)
             {
-                foreach (var comp in settings.Settings.LeagueCompanions)
+                if (comp.CompanionEnabled)
                 {
-                    if (comp.CompanionEnabled) 
-                    {
-                        logger.Info($"Starting League of Legends companion app: {comp.ExeName}");
-                        Process.Start(comp.ExePath, comp.LaunchArgs);
-                    }
-                }
-            }
-            if (args.Game.GameId == "rg-valorant")
-            {
-                foreach (var comp in settings.Settings.ValorantCompanions)
-                {
-                    if (comp.CompanionEnabled)
-                    {
-                        logger.Info($"Starting Valorant companion app: {comp.ExeName}");
-                        Process.Start(comp.ExePath, comp.LaunchArgs); 
-                    }
+                    logger.Info($"Starting {gameName} companion app: {comp.ExeName}");
+                    Process.Start(comp.ExePath, comp.LaunchArgs);
                 }
             }
         }
@@ -251,67 +239,35 @@ namespace RiotGamesLibrary
         public override void OnGameStopped(OnGameStoppedEventArgs args)
         {
             base.OnGameStopped(args);
-            if (args.Game.PluginId != Id)
+            if (args.Game.PluginId != Id || args.Game.GameId == "rg-legendsofruneterra")
             {
                 return;
             }
-            if (args.Game.GameId == "rg-leagueoflegends")
+            ObservableCollection<CompanionApp> companionsList = (args.Game.GameId == "rg-leagueoflegends") ? settings.Settings.LeagueCompanions : settings.Settings.ValorantCompanions;
+            string gameName = (args.Game.GameId == "rg-leagueoflegends") ? "League of Legends" : "Valorant";
+            foreach (var comp in companionsList)
             {
-                foreach (var comp in settings.Settings.LeagueCompanions)
+                if (comp.CompanionEnabled && comp.CloseWithGame)
                 {
-                    if (comp.CompanionEnabled && comp.CloseWithGame)
+                    logger.Info($"Trying to stop {gameName} companion app: {comp.ExeName}");
+                    var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+                    using (var searcher = new ManagementObjectSearcher(wmiQueryString))
+                    using (var results = searcher.Get())
                     {
-                        logger.Info($"Trying to stop League of Legends companion app: {comp.ExeName}");
-                        var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
-                        using (var searcher = new ManagementObjectSearcher(wmiQueryString))
-                        using (var results = searcher.Get())
+                        var query = from p in Process.GetProcesses()
+                                    join mo in results.Cast<ManagementObject>()
+                                    on p.Id equals (int)(uint)mo["ProcessId"]
+                                    select new
+                                    {
+                                        Process = p,
+                                        Path = (string)mo["ExecutablePath"],
+                                        CommandLine = (string)mo["CommandLine"],
+                                    };
+                        foreach (var item in query)
                         {
-                            var query = from p in Process.GetProcesses()
-                                        join mo in results.Cast<ManagementObject>()
-                                        on p.Id equals (int)(uint)mo["ProcessId"]
-                                        select new
-                                        {
-                                            Process = p,
-                                            Path = (string)mo["ExecutablePath"],
-                                            CommandLine = (string)mo["CommandLine"],
-                                        };
-                            foreach (var item in query)
+                            if (item.Path != null && item.Path.Contains(Path.GetDirectoryName(comp.ExePath)))
                             {
-                                if (item.Path != null && item.Path.Contains(Path.GetDirectoryName(comp.ExePath)))
-                                {
-                                    item.Process.Kill();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (args.Game.GameId == "rg-valorant")
-            {
-                foreach (var comp in settings.Settings.ValorantCompanions)
-                {
-                    if (comp.CompanionEnabled && comp.CloseWithGame)
-                    {
-                        logger.Info($"Trying to stop Valorant companion app: {comp.ExeName}");
-                        var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
-                        using (var searcher = new ManagementObjectSearcher(wmiQueryString))
-                        using (var results = searcher.Get())
-                        {
-                            var query = from p in Process.GetProcesses()
-                                        join mo in results.Cast<ManagementObject>()
-                                        on p.Id equals (int)(uint)mo["ProcessId"]
-                                        select new
-                                        {
-                                            Process = p,
-                                            Path = (string)mo["ExecutablePath"],
-                                            CommandLine = (string)mo["CommandLine"],
-                                        };
-                            foreach (var item in query)
-                            {
-                                if (item.Path != null && item.Path.Contains(Path.GetDirectoryName(comp.ExePath)))
-                                {
-                                    item.Process.Kill();
-                                }
+                                item.Process.Kill();
                             }
                         }
                     }
