@@ -118,18 +118,22 @@ namespace RiotGamesLibrary
                     {
                         continue;
                     }
+                    List<GameAction> removals = new List<GameAction>();
                     for (int i = 0; i < game.GameActions.Count; i++)
                     {
                         if (game.GameActions[i].IsPlayAction)
                         {
-                            game.GameActions.Remove(game.GameActions[i]);
+                            removals.Add(game.GameActions[i]);
                         }
                         else if (game.GameActions[i].Name != null && game.GameActions[i].Name != string.Empty && game.GameActions[i].Name.ToLower().Contains("companion"))
                         {
-                            game.GameActions.Remove(game.GameActions[i]);
+                            removals.Add(game.GameActions[i]);
                         }
                     }
-
+                    foreach (var r in removals)
+                    {
+                        game.GameActions.Remove(r);
+                    }
                     PlayniteApi.Database.Games.Update(game);
                 }
                 settings.Settings.FirstStart = false;
@@ -163,6 +167,7 @@ namespace RiotGamesLibrary
 
                 ObservableCollection<CompanionApp> companionsList = (game.GameId == "rg-leagueoflegends") ? settings.Settings.LeagueCompanions : settings.Settings.ValorantCompanions;
                 string gameName = (game.GameId == "rg-leagueoflegends") ? "League of Legends" : "Valorant";
+                List<GameAction> removals = new List<GameAction>();
                 foreach (var comp in companionsList)
                 {
                     bool actionExists = false;
@@ -190,7 +195,7 @@ namespace RiotGamesLibrary
                             else
                             {
                                 logger.Info($"Removing game action for {comp.ExeName} from {gameName}");
-                                game.GameActions.Remove(game.GameActions[i]);
+                                removals.Add(game.GameActions[i]);
                             }
                         }
                     }
@@ -209,8 +214,10 @@ namespace RiotGamesLibrary
                         });
                     }
                 }
-
-                
+                foreach (var r in removals)
+                {
+                    game.GameActions.Remove(r);
+                }                
                 PlayniteApi.Database.Games.Update(game);
             }
             PlayniteApi.Database.Games.EndBufferUpdate();
