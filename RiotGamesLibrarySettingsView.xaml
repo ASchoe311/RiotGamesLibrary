@@ -47,7 +47,7 @@
                     <DataGrid Name="GridLeagueCompanions" ItemsSource="{Binding Settings.LeagueCompanions}" DockPanel.Dock="Top"
                               CanUserAddRows="False" CanUserResizeRows="False" AutoGenerateColumns="False" GridLinesVisibility="None" SelectionMode="Single">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Enabled" Width="Auto">
+                            <DataGridTemplateColumn Header="Auto-Launch" Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding CompanionEnabled, UpdateSourceTrigger=PropertyChanged}" 
@@ -107,7 +107,7 @@
                     <DataGrid Name="GridValorantCompanions" ItemsSource="{Binding Settings.ValorantCompanions}" DockPanel.Dock="Top"
               CanUserAddRows="False" CanUserResizeRows="False" AutoGenerateColumns="False" GridLinesVisibility="None" SelectionMode="Single">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Enabled" Width="Auto" >
+                            <DataGridTemplateColumn Header="Auto-Launch" Width="Auto" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding CompanionEnabled, UpdateSourceTrigger=PropertyChanged}" 
