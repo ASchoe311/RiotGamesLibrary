@@ -57,12 +57,6 @@ namespace RiotGamesLibrary
             UpdateSettings();
         }
 
-        //private static Tuple<string, string, string>[] rgGames = { 
-        //    Tuple.Create("rg-leagueoflegends", "League of Legends", "--launch-product=league_of_legends --launch-patchline=live"),
-        //    Tuple.Create("rg-valorant", "Valorant", "--launch-product=valorant --launch-patchline=live"),
-        //    Tuple.Create("rg-legendsofruneterra", "Legends of Runeterra", "--launch-product=bacon --launch-patchline=live")
-        //};
-
         private static Dictionary<string, Tuple<string, string>> rgGames = new Dictionary<string, Tuple<string, string>>()
         {
             { "rg-leagueoflegends", Tuple.Create("League of Legends", "--launch-product=league_of_legends --launch-patchline=live") },
@@ -143,131 +137,80 @@ namespace RiotGamesLibrary
             }
         }
 
+        private GameAction GenAction (CompanionApp comp)
+        {
+            return new GameAction()
+            {
+                Name = $"Open {comp.ExeName}",
+                Type = GameActionType.File,
+                Path = comp.ExePath,
+                Arguments = comp.LaunchArgs,
+                WorkingDir = Path.GetDirectoryName(comp.ExePath),
+                TrackingMode = TrackingMode.Default,
+                IsPlayAction = false
+            };
+        }
+
         public void UpdateCompanionActions()
         {
             PlayniteApi.Database.Games.BeginBufferUpdate();
             foreach (var game in PlayniteApi.Database.Games)
             {
-                if (game.PluginId != Id)
+                if (game.PluginId != Id || game.GameId == "rg-legendsofruneterra")
                 {
                     continue;
                 }
-                if (game.GameId == "rg-leagueoflegends")
+
+                ObservableCollection<CompanionApp> companionsList = (game.GameId == "rg-leagueoflegends") ? settings.Settings.LeagueCompanions : settings.Settings.ValorantCompanions;
+                string gameName = (game.GameId == "rg-leagueoflegends") ? "League of Legends" : "Valorant";
+                foreach (var comp in companionsList)
                 {
-                    foreach (var comp in settings.Settings.LeagueCompanions)
+                    bool actionExists = false;
+                    if (game.GameActions == null)
                     {
-                        bool actionExists = false;
-                        if (game.GameActions == null)
+                        if (comp.GenerateAction)
                         {
+                            logger.Info($"Generating game action for {comp.ExeName} for {gameName}");
+                            game.GameActions = new ObservableCollection<GameAction>();
+                            game.GameActions.Add(GenAction(comp));
+                        }
+                        continue;
+                    }
+                    for (int i = 0; i < game.GameActions.Count; i++)
+                    {
+                        if (game.GameActions[i].Name == $"Open {comp.ExeName}")
+                        {
+                            actionExists = true;
                             if (comp.GenerateAction)
                             {
-                                logger.Info($"Generating game action for {comp.ExeName} for League of Legends");
-                                game.GameActions = new ObservableCollection<GameAction>();
-                                game.GameActions.Add(new GameAction()
-                                {
-                                    Name = $"Open {comp.ExeName}",
-                                    Type = GameActionType.File,
-                                    Path = comp.ExePath,
-                                    Arguments = comp.LaunchArgs,
-                                    WorkingDir = Path.GetDirectoryName(comp.ExePath),
-                                    TrackingMode = TrackingMode.Default,
-                                    IsPlayAction = false
-                                });
+                                game.GameActions[i].Path = comp.ExePath;
+                                game.GameActions[i].Arguments = comp.LaunchArgs;
+                                game.GameActions[i].WorkingDir = Path.GetDirectoryName(comp.ExePath);
                             }
-                            continue;
-                        }
-                        for (int i = 0; i < game.GameActions.Count; i++)
-                        {
-                            if (game.GameActions[i].Name == $"Open {comp.ExeName}")
+                            else
                             {
-                                actionExists = true;
-                                if (comp.GenerateAction)
-                                {
-                                    game.GameActions[i].Path = comp.ExePath;
-                                    game.GameActions[i].Arguments = comp.LaunchArgs;
-                                    game.GameActions[i].WorkingDir = Path.GetDirectoryName(comp.ExePath);
-                                }
-                                else
-                                {
-                                    logger.Info($"Removing game action for {comp.ExeName} from League of Legends");
-                                    game.GameActions.Remove(game.GameActions[i]);
-                                }
+                                logger.Info($"Removing game action for {comp.ExeName} from {gameName}");
+                                game.GameActions.Remove(game.GameActions[i]);
                             }
-                        }
-                        if (!actionExists && comp.GenerateAction)
-                        {
-                            logger.Info($"Generating game action for {comp.ExeName} for League of Legends");
-                            game.GameActions.Add(new GameAction()
-                            {
-                                Name = $"Open {comp.ExeName}",
-                                Type = GameActionType.File,
-                                Path = comp.ExePath,
-                                Arguments = comp.LaunchArgs,
-                                WorkingDir = Path.GetDirectoryName(comp.ExePath),
-                                TrackingMode = TrackingMode.Default,
-                                IsPlayAction = false
-                            });
                         }
                     }
-                }
-                if (game.GameId == "rg-valorant")
-                {
-                    foreach (var comp in settings.Settings.ValorantCompanions)
+                    if (!actionExists && comp.GenerateAction)
                     {
-                        bool actionExists = false;
-                        if (game.GameActions == null)
+                        logger.Info($"Generating game action for {comp.ExeName} for  {gameName}");
+                        game.GameActions.Add(new GameAction()
                         {
-                            if (comp.GenerateAction)
-                            {
-                                logger.Info($"Generating game action for {comp.ExeName} for Valorant");
-                                game.GameActions = new ObservableCollection<GameAction>();
-                                game.GameActions.Add(new GameAction()
-                                {
-                                    Name = $"Open {comp.ExeName}",
-                                    Type = GameActionType.File,
-                                    Path = comp.ExePath,
-                                    Arguments = comp.LaunchArgs,
-                                    WorkingDir = Path.GetDirectoryName(comp.ExePath),
-                                    TrackingMode = TrackingMode.Default,
-                                    IsPlayAction = false
-                                });
-                            }
-                            continue;
-                        }
-                        for (int i = 0; i < game.GameActions.Count; i++)
-                        {
-                            if (game.GameActions[i].Name == $"Open {comp.ExeName}")
-                            {
-                                actionExists = true;
-                                if (comp.GenerateAction)
-                                {
-                                    game.GameActions[i].Path = comp.ExePath;
-                                    game.GameActions[i].Arguments = comp.LaunchArgs;
-                                    game.GameActions[i].WorkingDir = Path.GetDirectoryName(comp.ExePath);
-                                }
-                                else
-                                {
-                                    logger.Info($"Removing game action for {comp.ExeName} from Valorant");
-                                    game.GameActions.Remove(game.GameActions[i]);
-                                }
-                            }
-                        }
-                        if (!actionExists && comp.GenerateAction)
-                        {
-                            logger.Info($"Generating game action for {comp.ExeName} for Valorant");
-                            game.GameActions.Add(new GameAction()
-                            {
-                                Name = $"Open {comp.ExeName}",
-                                Type = GameActionType.File,
-                                Path = comp.ExePath,
-                                Arguments = comp.LaunchArgs,
-                                WorkingDir = Path.GetDirectoryName(comp.ExePath),
-                                TrackingMode = TrackingMode.Default,
-                                IsPlayAction = false
-                            });
-                        }
+                            Name = $"Open {comp.ExeName}",
+                            Type = GameActionType.File,
+                            Path = comp.ExePath,
+                            Arguments = comp.LaunchArgs,
+                            WorkingDir = Path.GetDirectoryName(comp.ExePath),
+                            TrackingMode = TrackingMode.Default,
+                            IsPlayAction = false
+                        });
                     }
                 }
+
+                
                 PlayniteApi.Database.Games.Update(game);
             }
             PlayniteApi.Database.Games.EndBufferUpdate();
