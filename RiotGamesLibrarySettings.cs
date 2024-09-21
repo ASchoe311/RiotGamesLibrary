@@ -34,7 +34,7 @@ namespace RiotGamesLibrary
         private string _LORPath = RiotGame.IsInstalled("rg-legendsofruneterra") ? RiotGame.InstallPath("rg-legendsofruneterra") : "Not Installed";
         private bool _LeagueUseShortCompName = true;
         private bool _ValUseShortCompName = true;
-        private bool _FirstStart = true;
+        private int _VersionNum = 1;
 
         public bool CloseRiotClient { get => _CloseRiotClient; set => SetValue(ref _CloseRiotClient, value); }
         public string RiotClientPath { get => _RiotClientPath; set => SetValue(ref _RiotClientPath, value);  }
@@ -46,7 +46,7 @@ namespace RiotGamesLibrary
         public ObservableCollection<CompanionApp> ValorantCompanions { get; set; } = new ObservableCollection<CompanionApp>();
         public bool LeagueUseShortCompName { get => _LeagueUseShortCompName; set => SetValue(ref _LeagueUseShortCompName, value); }
         public bool ValUseShortCompName { get => _ValUseShortCompName; set => SetValue(ref _ValUseShortCompName, value); }
-        public bool FirstStart { get => _FirstStart; set => SetValue(ref _FirstStart, value); }
+        public int VersionNum { get => _VersionNum; set => SetValue(ref _VersionNum, value); }
     }
 
     public class RiotGamesLibrarySettingsViewModel : ObservableObject, ISettings

@@ -36,6 +36,7 @@ namespace RiotGamesLibrary
         private static readonly string iconPath = Path.Combine(AssemblyPath, "icon.png");
 
         public override Guid Id { get; } = Guid.Parse("91d13c6f-63d3-42ed-a100-6f811a8387ea");
+        private int vNum = 2;
 
         // Change to something more appropriate
         public override string Name => "Riot Games";
@@ -85,7 +86,7 @@ namespace RiotGamesLibrary
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
             base.OnApplicationStarted(args);
-            if (settings.Settings.FirstStart)
+            if (settings.Settings.VersionNum != vNum)
             {
                 logger.Info("Detected first run of new plugin version, ensuring sources are properly set and clearing outdated game actions");
                 Guid rgSource = Guid.NewGuid();
@@ -136,7 +137,7 @@ namespace RiotGamesLibrary
                     }
                     PlayniteApi.Database.Games.Update(game);
                 }
-                settings.Settings.FirstStart = false;
+                settings.Settings.VersionNum = vNum;
                 SavePluginSettings(settings.Settings);
             }
         }
