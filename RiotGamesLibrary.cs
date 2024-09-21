@@ -265,6 +265,7 @@ namespace RiotGamesLibrary
             }
             PlayniteApi.Database.Games.EndBufferUpdate();
         }
+
         public override void OnGameStarted(OnGameStartedEventArgs args)
         {
             //logger.Debug($"launching game with id {args.Game.Id}");
@@ -332,11 +333,22 @@ namespace RiotGamesLibrary
                         }
                         else
                         {
-                            Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(comp.ExePath));
-                            foreach (Process proc in procs)
+                            var allProcs = Process.GetProcesses();
+                            foreach (Process proc in allProcs)
                             {
-                                proc.Kill();
+                                foreach (ProcessModule processModule in proc.Modules)
+                                {
+                                    if (processModule.FileName == Path.GetFileName(comp.ExePath))
+                                    {
+                                        proc.Kill();
+                                    }
+                                }
                             }
+                            //Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(comp.ExePath));
+                            //foreach (Process proc in procs)
+                            //{
+                            //    proc.Kill();
+                            //}
                         }
                     }
                 }
