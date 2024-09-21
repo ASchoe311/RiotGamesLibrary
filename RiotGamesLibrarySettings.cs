@@ -28,13 +28,13 @@ namespace RiotGamesLibrary
     {
         private bool _CloseRiotClient = true;
         private string _RiotClientPath = RiotClient.InstallationPath;
-        private string _LeaguePath = RiotClient.LeagueInstalled ? RiotClient.LeagueInstallPath : "Not Installed";
+        private string _LeaguePath = RiotGame.IsInstalled("rg-leagueoflegends") ? RiotGame.InstallPath("rg-leagueoflegends") : "Not Installed";
         private bool _LeaguePBE = false;
-        private string _ValorantPath = RiotClient.ValorantInstalled ? RiotClient.ValorantInstallPath : "Not Installed";
-        private string _LORPath = RiotClient.LORInstalled ? RiotClient.LORInstallPath : "Not Installed";
+        private string _ValorantPath = RiotGame.IsInstalled("rg-valorant") ? RiotGame.InstallPath("rg-valorant") : "Not Installed";
+        private string _LORPath = RiotGame.IsInstalled("rg-legendsofruneterra") ? RiotGame.InstallPath("rg-legendsofruneterra") : "Not Installed";
         private bool _LeagueUseShortCompName = true;
         private bool _ValUseShortCompName = true;
-        private bool _FirstStart = true;
+        private int _VersionNum = 1;
 
         public bool CloseRiotClient { get => _CloseRiotClient; set => SetValue(ref _CloseRiotClient, value); }
         public string RiotClientPath { get => _RiotClientPath; set => SetValue(ref _RiotClientPath, value);  }
@@ -46,7 +46,7 @@ namespace RiotGamesLibrary
         public ObservableCollection<CompanionApp> ValorantCompanions { get; set; } = new ObservableCollection<CompanionApp>();
         public bool LeagueUseShortCompName { get => _LeagueUseShortCompName; set => SetValue(ref _LeagueUseShortCompName, value); }
         public bool ValUseShortCompName { get => _ValUseShortCompName; set => SetValue(ref _ValUseShortCompName, value); }
-        public bool FirstStart { get => _FirstStart; set => SetValue(ref _FirstStart, value); }
+        public int VersionNum { get => _VersionNum; set => SetValue(ref _VersionNum, value); }
     }
 
     public class RiotGamesLibrarySettingsViewModel : ObservableObject, ISettings
@@ -129,14 +129,17 @@ namespace RiotGamesLibrary
                     {
                         continue;
                     }
+                    if (game.GameActions == null) { break; }
                     for (int i = 0; i < game.GameActions.Count; i++)
                     {
                         if (game.GameActions[i].Name == $"Open {comp.ExeName}")
                         {
                             game.GameActions.Remove(game.GameActions[i]);
                             Playnite.SDK.API.Instance.Database.Games.Update(game);
+                            break;
                         }
                     }
+                    break;
                 }
             }
             comps.Remove(comp);
@@ -220,6 +223,7 @@ namespace RiotGamesLibrary
             // Code executed when user decides to cancel any changes made since BeginEdit was called.
             // This method should revert any changes made to Option1 and CloseRiotClient.
             Settings = editingClone;
+            plugin.UpdateCompanionActions();
         }
 
         public void EndEdit()
