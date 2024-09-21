@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Management;
 
 namespace RiotGamesLibrary
 {
@@ -92,7 +93,7 @@ namespace RiotGamesLibrary
             base.OnApplicationStarted(args);
             if (settings.Settings.FirstStart)
             {
-                logger.Info("Detected first run of new plugin version, ensuring sources are properly set and clearing outdated companion actions");
+                logger.Info("Detected first run of new plugin version, ensuring sources are properly set and clearing outdated game actions");
                 Guid rgSource = Guid.NewGuid();
                 bool srcFound = false;
                 foreach (var source in PlayniteApi.Database.Sources)
@@ -119,16 +120,22 @@ namespace RiotGamesLibrary
                         continue;
                     }
                     game.SourceId = rgSource;
-                    if (game.GameId != "rg-legendsofruneterra")
+                    if (game.GameActions == null)
                     {
-                        for (int i = 0; i < game.GameActions.Count; i++)
+                        continue;
+                    }
+                    for (int i = 0; i < game.GameActions.Count; i++)
+                    {
+                        if (game.GameActions[i].IsPlayAction)
                         {
-                            if (game.GameActions[i].Name != null && game.GameActions[i].Name != string.Empty && game.GameActions[i].Name.ToLower().Contains("companion"))
-                            {
-                                game.GameActions.Remove(game.GameActions[i]);
-                            }
+                            game.GameActions.Remove(game.GameActions[i]);
+                        }
+                        else if (game.GameActions[i].Name != null && game.GameActions[i].Name != string.Empty && game.GameActions[i].Name.ToLower().Contains("companion"))
+                        {
+                            game.GameActions.Remove(game.GameActions[i]);
                         }
                     }
+
                     PlayniteApi.Database.Games.Update(game);
                 }
                 settings.Settings.FirstStart = false;
@@ -265,7 +272,7 @@ namespace RiotGamesLibrary
             }
             PlayniteApi.Database.Games.EndBufferUpdate();
         }
-
+     
         public override void OnGameStarted(OnGameStartedEventArgs args)
         {
             //logger.Debug($"launching game with id {args.Game.Id}");
@@ -298,14 +305,6 @@ namespace RiotGamesLibrary
             }
         }
 
-        private static List<string> overwolfProcs = new List<string>()
-        {
-            "Overwolf",
-            "OverwolfBrowser",
-            "OverwolfHelper64",
-            "OverwolfHelper"
-        };
-
         public override void OnGameStopped(OnGameStoppedEventArgs args)
         {
             base.OnGameStopped(args);
@@ -320,35 +319,26 @@ namespace RiotGamesLibrary
                     if (comp.CompanionEnabled && comp.CloseWithGame)
                     {
                         logger.Info($"Trying to stop League of Legends companion app: {comp.ExeName}");
-                        if (Path.GetFileNameWithoutExtension(comp.ExePath) == "OverwolfLauncher")
+                        var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+                        using (var searcher = new ManagementObjectSearcher(wmiQueryString))
+                        using (var results = searcher.Get())
                         {
-                            foreach (string owProc in overwolfProcs)
+                            var query = from p in Process.GetProcesses()
+                                        join mo in results.Cast<ManagementObject>()
+                                        on p.Id equals (int)(uint)mo["ProcessId"]
+                                        select new
+                                        {
+                                            Process = p,
+                                            Path = (string)mo["ExecutablePath"],
+                                            CommandLine = (string)mo["CommandLine"],
+                                        };
+                            foreach (var item in query)
                             {
-                                var procs = Process.GetProcessesByName(owProc);
-                                foreach (var proc in procs)
+                                if (item.Path != null && item.Path.Contains(Path.GetDirectoryName(comp.ExePath)))
                                 {
-                                    if (proc != null) { proc.Kill(); }
+                                    item.Process.Kill();
                                 }
                             }
-                        }
-                        else
-                        {
-                            var allProcs = Process.GetProcesses();
-                            foreach (Process proc in allProcs)
-                            {
-                                foreach (ProcessModule processModule in proc.Modules)
-                                {
-                                    if (processModule.FileName == Path.GetFileName(comp.ExePath))
-                                    {
-                                        proc.Kill();
-                                    }
-                                }
-                            }
-                            //Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(comp.ExePath));
-                            //foreach (Process proc in procs)
-                            //{
-                            //    proc.Kill();
-                            //}
                         }
                     }
                 }
@@ -360,23 +350,25 @@ namespace RiotGamesLibrary
                     if (comp.CompanionEnabled && comp.CloseWithGame)
                     {
                         logger.Info($"Trying to stop Valorant companion app: {comp.ExeName}");
-                        if (Path.GetFileNameWithoutExtension(comp.ExePath) == "OverwolfLauncher")
+                        var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+                        using (var searcher = new ManagementObjectSearcher(wmiQueryString))
+                        using (var results = searcher.Get())
                         {
-                            foreach (string owProc in overwolfProcs)
+                            var query = from p in Process.GetProcesses()
+                                        join mo in results.Cast<ManagementObject>()
+                                        on p.Id equals (int)(uint)mo["ProcessId"]
+                                        select new
+                                        {
+                                            Process = p,
+                                            Path = (string)mo["ExecutablePath"],
+                                            CommandLine = (string)mo["CommandLine"],
+                                        };
+                            foreach (var item in query)
                             {
-                                var procs = Process.GetProcessesByName(owProc);
-                                foreach (var proc in procs)
+                                if (item.Path != null && item.Path.Contains(Path.GetDirectoryName(comp.ExePath)))
                                 {
-                                    if (proc != null) { proc.Kill(); }
+                                    item.Process.Kill();
                                 }
-                            }
-                        }
-                        else
-                        {
-                            Process[] procs = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(comp.ExePath));
-                            foreach (Process proc in procs)
-                            {
-                                proc.Kill();
                             }
                         }
                     }
