@@ -247,35 +247,38 @@ namespace RiotGamesLibrary
         public override void OnGameStopped(OnGameStoppedEventArgs args)
         {
             base.OnGameStopped(args);
-            if (args.Game.PluginId != Id || args.Game.GameId == "rg-legendsofruneterra")
+            if (args.Game.PluginId != Id)
             {
                 return;
             }
-            ObservableCollection<CompanionApp> companionsList = (args.Game.GameId == "rg-leagueoflegends") ? settings.Settings.LeagueCompanions : settings.Settings.ValorantCompanions;
-            string gameName = (args.Game.GameId == "rg-leagueoflegends") ? "League of Legends" : "Valorant";
-            foreach (var comp in companionsList)
+            if (args.Game.GameId != "rg-legendsofruneterra")
             {
-                if (comp.CompanionEnabled && comp.CloseWithGame)
+                ObservableCollection<CompanionApp> companionsList = (args.Game.GameId == "rg-leagueoflegends") ? settings.Settings.LeagueCompanions : settings.Settings.ValorantCompanions;
+                string gameName = (args.Game.GameId == "rg-leagueoflegends") ? "League of Legends" : "Valorant";
+                foreach (var comp in companionsList)
                 {
-                    logger.Info($"Trying to stop {gameName} companion app: {comp.ExeName}");
-                    var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
-                    using (var searcher = new ManagementObjectSearcher(wmiQueryString))
-                    using (var results = searcher.Get())
+                    if (comp.CompanionEnabled && comp.CloseWithGame)
                     {
-                        var query = from p in Process.GetProcesses()
-                                    join mo in results.Cast<ManagementObject>()
-                                    on p.Id equals (int)(uint)mo["ProcessId"]
-                                    select new
-                                    {
-                                        Process = p,
-                                        Path = (string)mo["ExecutablePath"],
-                                        CommandLine = (string)mo["CommandLine"],
-                                    };
-                        foreach (var item in query)
+                        logger.Info($"Trying to stop {gameName} companion app: {comp.ExeName}");
+                        var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+                        using (var searcher = new ManagementObjectSearcher(wmiQueryString))
+                        using (var results = searcher.Get())
                         {
-                            if (item.Path != null && item.Path.Contains(Path.GetDirectoryName(comp.ExePath)))
+                            var query = from p in Process.GetProcesses()
+                                        join mo in results.Cast<ManagementObject>()
+                                        on p.Id equals (int)(uint)mo["ProcessId"]
+                                        select new
+                                        {
+                                            Process = p,
+                                            Path = (string)mo["ExecutablePath"],
+                                            CommandLine = (string)mo["CommandLine"],
+                                        };
+                            foreach (var item in query)
                             {
-                                item.Process.Kill();
+                                if (item.Path != null && item.Path.Contains(Path.GetDirectoryName(comp.ExePath)))
+                                {
+                                    item.Process.Kill();
+                                }
                             }
                         }
                     }
