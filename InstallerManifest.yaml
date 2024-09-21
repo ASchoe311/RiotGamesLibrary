@@ -1,5 +1,17 @@
 ﻿AddonId: RiotGamesLibrary_91d13c6f-63d3-42ed-a100-6f811a8387ea
 Packages:
+  - Version: 2.2.0
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2024-09-20
+    PackageUrl: https://github.com/ASchoe311/RiotGamesLibrary/releases/download/v2.2.0/RiotGamesLibrary_91d13c6f-63d3-42ed-a100-6f811a8387ea_2_2_0.pext
+    Changelog:
+          - Changed play action handling from pre-made actions to library integration play actions
+          - Revamped companion app closing process so that it now should properly close any set companion app
+          - Changed column header "Enabled" in companion app tables to "Auto-Launch" to better reflect the meaning behind the row values
+          - Added code to automatically remove obsolete game actions
+          - Fixed a bug where tracking paths were not properly set when games were installed
+          - Fixed potential out-of-bounds error during removal of companion app actions
+          - Reduced code duplication and improved code readability for multiple functions
   - Version: 2.1.0
     RequiredApiVersion: 6.2.0
     ReleaseDate: 2024-09-19
