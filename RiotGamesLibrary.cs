@@ -53,7 +53,8 @@ namespace RiotGamesLibrary
             settings = new RiotGamesLibrarySettingsViewModel(this);
             Properties = new LibraryPluginProperties
             {
-                HasSettings = true
+                HasSettings = true,
+                CanShutdownClient = true
             };
             UpdateSettings();
         }
@@ -260,7 +261,7 @@ namespace RiotGamesLibrary
                     if (comp.CompanionEnabled && comp.CloseWithGame)
                     {
                         logger.Info($"Trying to stop {gameName} companion app: {comp.ExeName}");
-                        var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+                                                var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
                         using (var searcher = new ManagementObjectSearcher(wmiQueryString))
                         using (var results = searcher.Get())
                         {
@@ -329,6 +330,15 @@ namespace RiotGamesLibrary
             {
                 yield break;
             }
+
+            logger.Info($"Initializing play controller for {args.Game.GameId} with tracking path {RiotGame.InstallPath(args.Game.GameId)} ");
+            Dictionary<string, string> idToExe = new Dictionary<string, string>()
+            {
+                { "rg-leagueoflegends", "LeagueClient.exe" },
+                { "rg-valorant", "VALORANT.exe" },
+                { "rg-legendsofruneterra", "LoR.exe" },
+            };
+            logger.Info($"Executable {idToExe[args.Game.GameId]} for {args.Game.GameId} is found in the tracking path? {File.Exists(Path.Combine(RiotGame.InstallPath(args.Game.GameId), idToExe[args.Game.GameId]))}");
 
             var gameInfo = rgGames[args.Game.GameId];
             AutomaticPlayController playController = new AutomaticPlayController(args.Game);
