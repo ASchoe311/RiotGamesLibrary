@@ -1,3 +1,5 @@
+![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FASchoe311%2FRiotGamesLibrary%2Freleases%2Flatest&query=%24.assets%5B0%5D.download_count&label=Downloads%20on%20Latest%20Release%20)
+
 # [Riot Games](https://riotgames.com/) library plugin for [Playnite](https://playnite.link/)
 
 Allows Playnite to manage install, uninstall, and launching of games by Riot Games
