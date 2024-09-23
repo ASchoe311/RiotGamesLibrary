@@ -90,11 +90,11 @@
     <None Include="InstallerManifest.yaml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\leagueicon.png" />
+    <Content Include="Resources\bacon.live.ico" />
     <Content Include="icon.png" />
-    <Content Include="Resources\loricon.png" />
+    <Content Include="Resources\league_of_legends.live.ico" />
     <Content Include="Resources\rioticon.png" />
-    <Content Include="Resources\valoranticon.png" />
+    <Content Include="Resources\valorant.live.ico" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Shell32">

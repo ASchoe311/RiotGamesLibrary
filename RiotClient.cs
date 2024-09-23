@@ -27,9 +27,9 @@ namespace RiotGamesLibrary
 
         public static Dictionary<string, string> Icons = new Dictionary<string, string>()
         {
-            { "rg-leagueoflegends",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\leagueicon.png") },
-            { "rg-valorant",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\valoranticon.png") },
-            { "rg-legendsofruneterra",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\loricon.png") }
+            { "rg-leagueoflegends",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\league_of_legends.live.ico") },
+            { "rg-valorant",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\valorant.live.ico") },
+            { "rg-legendsofruneterra",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\bacon.live.ico") }
         };
 
         public static string InstallPath(string gameId)
