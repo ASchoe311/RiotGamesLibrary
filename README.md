@@ -1,4 +1,5 @@
-![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FASchoe311%2FRiotGamesLibrary%2Freleases%2Flatest&query=%24.assets%5B0%5D.download_count&label=Downloads%20on%20Latest%20Release%20)
+![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/ASchoe311/RiotGamesLibrary/latest/total?label=Latest%20Release%20Downloads)    ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/ASchoe311/RiotGamesLibrary/total?label=Lifetime%20Downloads)
+
 
 # [Riot Games](https://riotgames.com/) library plugin for [Playnite](https://playnite.link/)
 
