@@ -9,7 +9,7 @@
         <FontFamily x:Key="FontIcoFont">/Fonts/icofont.ttf#icofont</FontFamily>
     </UserControl.Resources>
     <TabControl ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-        <TabItem Header="General Settings">
+        <TabItem Header="{DynamicResource LOCRiotGamesGenSettings}">
             <StackPanel Margin="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -22,65 +22,65 @@
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row="0" Margin="5,0,0,15" VerticalAlignment="Center" HorizontalAlignment="Left">
-                        <Run Text="Riot Client Install Path:"/>
+                        <Run Text="{DynamicResource LOCRiotGamesRiotInstallPath}"/>
                         <Run Text="{Binding Settings.RiotClientPath, Mode=OneWay}"/>
                     </TextBlock>
-                    <CheckBox Content="Close Riot Client When Game Is Closed" IsChecked="{Binding Settings.CloseRiotClient}" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBlock Text="*Alternatively, use the 'Auto Close Clients' section of Playnite settings" Grid.Row="2" Grid.Column="0" Margin="25,0,0,15"/>
+                    <CheckBox Content="{DynamicResource LOCRiotGamesCloseClient}" IsChecked="{Binding Settings.CloseRiotClient}" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{DynamicResource LOCRiotGamesCloseClientAlt}" Grid.Row="2" Grid.Column="0" Margin="25,0,0,15"/>
                     <TextBlock Grid.Column="0" Grid.Row="3" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
-                        <Run Text="Legends of Runeterra Install Path:"/>
+                        <Run Text="{DynamicResource LOCRiotGamesLORPath}"/>
                         <Run Text="{Binding Settings.LORPath, Mode=OneWay}"/>
                     </TextBlock>
                 </Grid>
             </StackPanel>
         </TabItem>
-        <TabItem Header="League Settings">
+        <TabItem Header="{DynamicResource LOCRiotGamesLeagueSettings}">
             <StackPanel Margin="20">
                 <TextBlock Margin="5,0,0,5" VerticalAlignment="Center">
-                    <Run Text="League of Legends Install Path:"/>
+                    <Run Text="{DynamicResource LOCRiotGamesLeaguePath}"/>
                     <Run Text="{Binding Settings.LeaguePath, Mode=OneWay}"/>
                 </TextBlock>
                 <DockPanel Margin="10">
-                    <TextBlock DockPanel.Dock="Top" Text="Specify companion applications for League of Legends" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                    <TextBlock DockPanel.Dock="Top" Text="{DynamicResource LOCRiotGamesLeagueCompsTitle}" TextWrapping="Wrap" Margin="0,0,0,5"/>
                     <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
-                        <Button Content="Add" Margin="0,10,0,0" DockPanel.Dock="Left" Command="{Binding AddCompCommand}" CommandParameter="rg-leagueoflegends" />
-                        <Button Content="Remove" Margin="10,10,0,0" DockPanel.Dock="Left" Command="{Binding RemoveLeagueCompCommand}" CommandParameter="{Binding SelectedItem, ElementName=GridLeagueCompanions}"/>
+                        <Button Content="{DynamicResource LOCAddTitle}" Margin="0,10,0,0" DockPanel.Dock="Left" Command="{Binding AddCompCommand}" CommandParameter="rg-leagueoflegends" />
+                        <Button Content="{DynamicResource LOCRemoveTitle}" Margin="10,10,0,0" DockPanel.Dock="Left" Command="{Binding RemoveLeagueCompCommand}" CommandParameter="{Binding SelectedItem, ElementName=GridLeagueCompanions}"/>
                     </DockPanel>
                     <DataGrid Name="GridLeagueCompanions" ItemsSource="{Binding Settings.LeagueCompanions}" DockPanel.Dock="Top"
                               CanUserAddRows="False" CanUserResizeRows="False" AutoGenerateColumns="False" GridLinesVisibility="None" SelectionMode="Single">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Auto-Launch" Width="Auto">
+                            <DataGridTemplateColumn Header="{DynamicResource LOCRiotGamesAutoLaunch}" Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding CompanionEnabled, UpdateSourceTrigger=PropertyChanged}" 
-                                                  HorizontalAlignment="Center" ToolTip="If checked, the companion app will launch when League is launched from Playnite"/>
+                                                  HorizontalAlignment="Center" ToolTip="{DynamicResource LOCRiotGamesAutoLaunchTooltipL}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Auto-Close" Width="Auto">
+                            <DataGridTemplateColumn Header="{DynamicResource LOCRiotGamesAutoClose}" Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding CloseWithGame, UpdateSourceTrigger=PropertyChanged}" 
-                                                  HorizontalAlignment="Center" ToolTip="If checked, the companion app will close when League is closed" />
+                                                  HorizontalAlignment="Center" ToolTip="{DynamicResource LOCRiotGamesAutoCloseTooltipL}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Make Game Action" Width="Auto">
+                            <DataGridTemplateColumn Header="{DynamicResource LOCRiotGamesMakeAction}" Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding GenerateAction, UpdateSourceTrigger=PropertyChanged}" 
-                                                  HorizontalAlignment="Center" ToolTip="If checked, a game action will be available to directly launch the companion app" />
+                                                  HorizontalAlignment="Center" ToolTip="{DynamicResource LOCRiotGamesMakeActionTooltip}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Companion App Executable" MinWidth="150" MaxWidth="250">
+                            <DataGridTemplateColumn Header="{DynamicResource LOCRiotGamesCompExe}" MinWidth="150" MaxWidth="250">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding ExePath, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Launch Arguments" MinWidth="150" MaxWidth="250">
+                            <DataGridTemplateColumn Header="{DynamicResource LOCRiotGamesCompArgs}" MinWidth="150" MaxWidth="250">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding LaunchArgs, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
@@ -90,57 +90,57 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="*If the app runs on Overwolf it will show up as the Overwolf executable with launch arguments" TextWrapping="Wrap" Margin="10,0,0,0"/>
-                <TextBlock DockPanel.Dock="Top" Text="*Hover over a checkbox to see a tooltip explaining what it does" TextWrapping="Wrap" Margin="10,0,0,0"/>
+                <TextBlock DockPanel.Dock="Top" Text="{DynamicResource LOCRiotGamesOverwolfInfo}" TextWrapping="Wrap" Margin="10,0,0,0"/>
+                <TextBlock DockPanel.Dock="Top" Text="{DynamicResource LOCRiotGamesHoverInfo}" TextWrapping="Wrap" Margin="10,0,0,0"/>
             </StackPanel>
         </TabItem>
-        <TabItem Header="Valorant Settings">
+        <TabItem Header="{DynamicResource LOCRiotGamesValorantSettings}">
             <StackPanel Margin="20">
                 <TextBlock Margin="5,0,0,5" VerticalAlignment="Center">
-                    <Run Text="Valorant Install Path:"/>
+                    <Run Text="{DynamicResource LOCRiotGamesValorantPath}"/>
                     <Run Text="{Binding Settings.ValorantPath, Mode=OneWay}"/>
                 </TextBlock>
                 <DockPanel Margin="10">
-                    <TextBlock DockPanel.Dock="Top" Text="Specify companion applications for Valorant" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                    <TextBlock DockPanel.Dock="Top" Text="{DynamicResource LOCRiotGamesValorantCompsTitle}" TextWrapping="Wrap" Margin="0,0,0,5"/>
                     <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
-                        <Button Content="Add" Margin="0,10,0,0" DockPanel.Dock="Left" Command="{Binding AddCompCommand}" CommandParameter="rg-valorant" />
-                        <Button Content="Remove" Margin="10,10,0,0" DockPanel.Dock="Left" Command="{Binding RemoveValorantCompCommand}" CommandParameter="{Binding SelectedItem, ElementName=GridValorantCompanions}"/>
+                        <Button Content="{DynamicResource LOCAddTitle}" Margin="0,10,0,0" DockPanel.Dock="Left" Command="{Binding AddCompCommand}" CommandParameter="rg-valorant" />
+                        <Button Content="{DynamicResource LOCRemoveTitle}" Margin="10,10,0,0" DockPanel.Dock="Left" Command="{Binding RemoveValorantCompCommand}" CommandParameter="{Binding SelectedItem, ElementName=GridValorantCompanions}"/>
                     </DockPanel>
                     <DataGrid Name="GridValorantCompanions" ItemsSource="{Binding Settings.ValorantCompanions}" DockPanel.Dock="Top"
               CanUserAddRows="False" CanUserResizeRows="False" AutoGenerateColumns="False" GridLinesVisibility="None" SelectionMode="Single">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Auto-Launch" Width="Auto" >
+                            <DataGridTemplateColumn Header="{DynamicResource LOCRiotGamesAutoLaunch}" Width="Auto" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding CompanionEnabled, UpdateSourceTrigger=PropertyChanged}" 
-                                  HorizontalAlignment="Center" ToolTip="If checked, the companion app will launch when Valorant is launched from Playnite"/>
+                                  HorizontalAlignment="Center" ToolTip="{DynamicResource LOCRiotGamesAutoLaunchTooltipV}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Auto-Close" Width="Auto" >
+                            <DataGridTemplateColumn Header="{DynamicResource LOCRiotGamesAutoClose}" Width="Auto" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding CloseWithGame, UpdateSourceTrigger=PropertyChanged}" 
-                                  HorizontalAlignment="Center" ToolTip="If checked, the companion app will close when Valorant is closed" />
+                                  HorizontalAlignment="Center" ToolTip="{DynamicResource LOCRiotGamesAutoCloseTooltipV}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Make Game Action" Width="Auto" >
+                            <DataGridTemplateColumn Header="{DynamicResource LOCRiotGamesMakeAction}" Width="Auto" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding GenerateAction, UpdateSourceTrigger=PropertyChanged}" 
-                                  HorizontalAlignment="Center" ToolTip="If checked, a game action will be available to directly launch the companion app" />
+                                  HorizontalAlignment="Center" ToolTip="{DynamicResource LOCRiotGamesMakeActionTooltip}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Companion App Executable" MinWidth="150" MaxWidth="250">
+                            <DataGridTemplateColumn Header="{DynamicResource LOCRiotGamesCompExe}" MinWidth="150" MaxWidth="250">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding ExePath, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Launch Arguments" MinWidth="150" MaxWidth="250">
+                            <DataGridTemplateColumn Header="{DynamicResource LOCRiotGamesCompArgs}" MinWidth="150" MaxWidth="250">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding LaunchArgs, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" />
@@ -150,8 +150,8 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="*If the app runs on Overwolf it will show up as the Overwolf executable with launch arguments" TextWrapping="Wrap" Margin="10,0,0,0"/>
-                <TextBlock DockPanel.Dock="Top" Text="*Hover over a checkbox to see a tooltip explaining what it does" TextWrapping="Wrap" Margin="10,0,0,0"/>
+                <TextBlock DockPanel.Dock="Top" Text="{DynamicResource LOCRiotGamesOverwolfInfo}" TextWrapping="Wrap" Margin="10,0,0,0"/>
+                <TextBlock DockPanel.Dock="Top" Text="{DynamicResource LOCRiotGamesHoverInfo}" TextWrapping="Wrap" Margin="10,0,0,0"/>
             </StackPanel>
         </TabItem>
     </TabControl>

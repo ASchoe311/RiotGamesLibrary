@@ -21,14 +21,14 @@ namespace RiotGamesLibrary
         private RiotGamesLibrary _plugin;
         public RiotInstallController(Game game, RiotGamesLibrary plugin) : base(game)
         {
-            Name = $"Install {game.Name}";
+            Name = $"{ResourceProvider.GetString("LOCInstallGame")} {game.Name}";
             _plugin = plugin;
         }
 
         public override void Install(InstallActionArgs args)
         {
             logger.Info("Opening riot client for installation");
-            Playnite.SDK.API.Instance.Dialogs.ShowMessage("Opening Riot Client so you can manually start game installation");
+            Playnite.SDK.API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCRiotGamesOpeningClient"));
             Process.Start(RiotClient.ClientExecPath);
             StartInstallWatcher();
         }
@@ -98,8 +98,8 @@ namespace RiotGamesLibrary
             };
         private List<MessageBoxOption> otherBoxOptions = new List<MessageBoxOption>
             {
-                new MessageBoxOption("Uninstall", true, false),
-                new MessageBoxOption("Cancel", false, true)
+                new MessageBoxOption(ResourceProvider.GetString("LOCUninstallGame"), true, false),
+                new MessageBoxOption(ResourceProvider.GetString("LOCCancelLabel"), false, true)
             };
 
         private RiotGamesLibrary _plugin;
@@ -124,7 +124,7 @@ namespace RiotGamesLibrary
 
         public RiotUninstallController(Game game, RiotGamesLibrary plugin) : base(game)
         {
-            Name = $"Uninstall {game.Name}";
+            Name = $"{ResourceProvider.GetString("LOCUninstallGame")} {game.Name}";
             _plugin = plugin;
         }
 
@@ -162,8 +162,8 @@ namespace RiotGamesLibrary
             //    );
             //}
             selected = playniteApi.Dialogs.ShowMessage(
-                    $"Confirm uninstall of {Game.Name}?",
-                    $"Uninstalling {Game.Name}",
+                    $"{ResourceProvider.GetString("LOCRiotGamesConfirmUninstall")} {Game.Name}?",
+                    $"{ResourceProvider.GetString("LOCUninstalling")} {Game.Name}",
                     MessageBoxImage.Exclamation,
                     otherBoxOptions
                 );

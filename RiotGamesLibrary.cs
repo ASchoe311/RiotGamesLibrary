@@ -297,10 +297,10 @@ namespace RiotGamesLibrary
 
         public void UpdateSettings()
         {
-            settings.Settings.RiotClientPath = RiotClient.IsInstalled ? RiotClient.InstallationPath : "Not Installed";
-            settings.Settings.LeaguePath = RiotGame.IsInstalled("rg-leagueoflegends") ? RiotGame.InstallPath("rg-leagueoflegends") : "Not Installed";
-            settings.Settings.ValorantPath = RiotGame.IsInstalled("rg-valorant") ? RiotGame.InstallPath("rg-valorant") : "Not Installed";
-            settings.Settings.LORPath = RiotGame.IsInstalled("rg-legendsofruneterra") ? RiotGame.InstallPath("rg-legendsofruneterra") : "Not Installed";
+            settings.Settings.RiotClientPath = RiotClient.IsInstalled ? RiotClient.InstallationPath : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
+            settings.Settings.LeaguePath = RiotGame.IsInstalled("rg-leagueoflegends") ? RiotGame.InstallPath("rg-leagueoflegends") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
+            settings.Settings.ValorantPath = RiotGame.IsInstalled("rg-valorant") ? RiotGame.InstallPath("rg-valorant") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
+            settings.Settings.LORPath = RiotGame.IsInstalled("rg-legendsofruneterra") ? RiotGame.InstallPath("rg-legendsofruneterra") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
             SavePluginSettings(settings.Settings);
         }
 

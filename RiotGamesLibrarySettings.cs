@@ -28,10 +28,10 @@ namespace RiotGamesLibrary
     {
         private bool _CloseRiotClient = true;
         private string _RiotClientPath = RiotClient.InstallationPath;
-        private string _LeaguePath = RiotGame.IsInstalled("rg-leagueoflegends") ? RiotGame.InstallPath("rg-leagueoflegends") : "Not Installed";
+        private string _LeaguePath = RiotGame.IsInstalled("rg-leagueoflegends") ? RiotGame.InstallPath("rg-leagueoflegends") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
         private bool _LeaguePBE = false;
-        private string _ValorantPath = RiotGame.IsInstalled("rg-valorant") ? RiotGame.InstallPath("rg-valorant") : "Not Installed";
-        private string _LORPath = RiotGame.IsInstalled("rg-legendsofruneterra") ? RiotGame.InstallPath("rg-legendsofruneterra") : "Not Installed";
+        private string _ValorantPath = RiotGame.IsInstalled("rg-valorant") ? RiotGame.InstallPath("rg-valorant") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
+        private string _LORPath = RiotGame.IsInstalled("rg-legendsofruneterra") ? RiotGame.InstallPath("rg-legendsofruneterra") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
         private bool _LeagueUseShortCompName = true;
         private bool _ValUseShortCompName = true;
         private int _VersionNum = 1;
@@ -79,7 +79,7 @@ namespace RiotGamesLibrary
                     {
                         if (companion.Item1 == comp.ExePath)
                         {
-                            Playnite.SDK.API.Instance.Dialogs.ShowErrorMessage("Selected app has already been added to companions list", "Error Adding Companion App");
+                            Playnite.SDK.API.Instance.Dialogs.ShowErrorMessage(ResourceProvider.GetString("LOCRiotGamesCompAlreadyAdded"), ResourceProvider.GetString("LOCRiotGamesCompAddError"));
                             return;
                         }
                     }
@@ -244,12 +244,12 @@ namespace RiotGamesLibrary
             {
                 if (comp.ExePath != string.Empty && (!File.Exists(comp.ExePath) || Path.GetExtension(comp.ExePath) != ".exe"))
                 {
-                    errors.Add($"League companion {comp.ExePath} does not point to a valid executable file");
+                    errors.Add($"{ResourceProvider.GetString("LOCRiotGamesLeagueCompanion")} {comp.ExePath} {ResourceProvider.GetString("LOCRiotGamesInvalidExe")}");
                     return false;
                 }
                 if (comp.ExePath == string.Empty)
                 {
-                    errors.Add($"Companion executable path cannot be empty");
+                    errors.Add(ResourceProvider.GetString("LOCRiotGamesEmptyPath"));
                     return false;
                 }
             }
@@ -257,12 +257,12 @@ namespace RiotGamesLibrary
             {
                 if (comp.ExePath != string.Empty && (!File.Exists(comp.ExePath) || Path.GetExtension(comp.ExePath) != ".exe"))
                 {
-                    errors.Add($"Valorant companion {comp.ExePath} does not point to a valid executable file");
+                    errors.Add($"{ResourceProvider.GetString("LOCRiotGamesValorantCompanion")} {comp.ExePath} {ResourceProvider.GetString("LOCRiotGamesInvalidExe")}");
                     return false;
                 }
                 if (comp.ExePath == string.Empty)
                 {
-                    errors.Add($"Companion executable path cannot be empty");
+                    errors.Add(ResourceProvider.GetString("LOCRiotGamesEmptyPath"));
                     return false;
                 }
             }
