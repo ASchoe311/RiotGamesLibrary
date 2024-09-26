@@ -10,6 +10,8 @@ Can attach companion applications to League of Legends and Valorant (e.g. U.GG, 
 
 Enables Riot Client to be force closed when a game is closed so it isn't always running in the background
 
+### Please contribute translations on [Crowdin](https://crowdin.com/project/riot-games-library)!
+
 ## Installation
 
 Download the latest .pext file from releases and open it using Playnite
