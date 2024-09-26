@@ -1,4 +1,5 @@
 ![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/ASchoe311/RiotGamesLibrary/latest/total?label=Latest%20Release%20Downloads)    ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/ASchoe311/RiotGamesLibrary/total?label=Lifetime%20Downloads)
+[![Crowdin](https://badges.crowdin.net/riot-games-library/localized.svg)](https://crowdin.com/project/riot-games-library)
 
 
 # [Riot Games](https://riotgames.com/) library plugin for [Playnite](https://playnite.link/)
