@@ -1,5 +1,16 @@
 ﻿AddonId: RiotGamesLibrary_91d13c6f-63d3-42ed-a100-6f811a8387ea
 Packages:
+  - Version: 2.3.0
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2024-09-28
+    PackageUrl: https://github.com/ASchoe311/RiotGamesLibrary/releases/download/v2.2.0/RiotGamesLibrary_91d13c6f-63d3-42ed-a100-6f811a8387ea_2_2_0.pext
+    Changelog:
+          - Added localization support with crowdin
+          - Now uses higher quality icons for Riot Client and games
+          - Enabled option for Riot Client to be auto-closed through Playnite's "Auto Close Clients" settings menu
+          - Improved spacing of some items in plugin settings
+          - Fixed a bug preventing companion apps from auto-closing when they were not set to auto-launch
+          - Added translation(s) - Spanish
   - Version: 2.2.0
     RequiredApiVersion: 6.2.0
     ReleaseDate: 2024-09-20
