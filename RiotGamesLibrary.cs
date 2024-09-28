@@ -272,7 +272,7 @@ namespace RiotGamesLibrary
                 string gameName = (args.Game.GameId == "rg-leagueoflegends") ? "League of Legends" : "Valorant";
                 foreach (var comp in companionsList)
                 {
-                    if (comp.CompanionEnabled && comp.CloseWithGame)
+                    if (comp.CloseWithGame)
                     {
                         logger.Info($"Trying to stop {gameName} companion app: {comp.ExeName}");
                                                 var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
