@@ -1,4 +1,5 @@
 ![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/ASchoe311/RiotGamesLibrary/latest/total?label=Latest%20Release%20Downloads)    ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/ASchoe311/RiotGamesLibrary/total?label=Lifetime%20Downloads)
+[![Crowdin](https://badges.crowdin.net/riot-games-library/localized.svg)](https://crowdin.com/project/riot-games-library)
 
 
 # [Riot Games](https://riotgames.com/) library plugin for [Playnite](https://playnite.link/)
@@ -8,6 +9,8 @@ Allows Playnite to manage install, uninstall, and launching of games by Riot Gam
 Can attach companion applications to League of Legends and Valorant (e.g. U.GG, Porofesser, blitz.gg) that launch and close with the games
 
 Enables Riot Client to be force closed when a game is closed so it isn't always running in the background
+
+### Please contribute translations on [Crowdin](https://crowdin.com/project/riot-games-library)!
 
 ## Installation
 
