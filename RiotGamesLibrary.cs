@@ -36,7 +36,7 @@ namespace RiotGamesLibrary
         private static readonly string iconPath = Path.Combine(AssemblyPath, "icon.png");
 
         public override Guid Id { get; } = Guid.Parse("91d13c6f-63d3-42ed-a100-6f811a8387ea");
-        private int vNum = 2;
+        private int vNum = 3;
 
         // Change to something more appropriate
         public override string Name => "Riot Games";
@@ -89,7 +89,7 @@ namespace RiotGamesLibrary
             base.OnApplicationStarted(args);
             if (settings.Settings.VersionNum != vNum)
             {
-                logger.Info("Detected first run of new plugin version, ensuring sources are properly set and clearing outdated game actions");
+                logger.Info("Detected first run of new plugin version, ensuring sources are properly set, clearing outdated game actions, and updating icons");
                 Guid rgSource = Guid.NewGuid();
                 bool srcFound = false;
                 foreach (var source in PlayniteApi.Database.Sources)
@@ -115,26 +115,40 @@ namespace RiotGamesLibrary
                     {
                         continue;
                     }
-                    game.SourceId = rgSource;
-                    if (game.GameActions == null)
+                    if (game.SourceId == null || game.SourceId != rgSource)
                     {
-                        continue;
+                        game.SourceId = rgSource;
                     }
-                    List<GameAction> removals = new List<GameAction>();
-                    for (int i = 0; i < game.GameActions.Count; i++)
+                    if (game.GameId == "rg-leagueoflegends")
                     {
-                        if (game.GameActions[i].IsPlayAction)
-                        {
-                            removals.Add(game.GameActions[i]);
-                        }
-                        else if (game.GameActions[i].Name != null && game.GameActions[i].Name != string.Empty && game.GameActions[i].Name.ToLower().Contains("companion"))
-                        {
-                            removals.Add(game.GameActions[i]);
-                        }
+                        game.Icon = Path.Combine(AssemblyPath, @"Resources\league_of_legends.live.ico");
                     }
-                    foreach (var r in removals)
+                    if (game.GameId == "rg-valorant")
                     {
-                        game.GameActions.Remove(r);
+                        game.Icon = Path.Combine(AssemblyPath, @"Resources\valorant.live.ico");
+                    }
+                    if (game.GameId == "rg-legendsofruneterra")
+                    {
+                        game.Icon = Path.Combine(AssemblyPath, @"Resources\bacon.live.ico");
+                    }
+                    if (game.GameActions != null)
+                    {
+                        List<GameAction> removals = new List<GameAction>();
+                        for (int i = 0; i < game.GameActions.Count; i++)
+                        {
+                            if (game.GameActions[i].IsPlayAction)
+                            {
+                                removals.Add(game.GameActions[i]);
+                            }
+                            else if (game.GameActions[i].Name != null && game.GameActions[i].Name != string.Empty && game.GameActions[i].Name.ToLower().Contains("companion"))
+                            {
+                                removals.Add(game.GameActions[i]);
+                            }
+                        }
+                        foreach (var r in removals)
+                        {
+                            game.GameActions.Remove(r);
+                        }
                     }
                     PlayniteApi.Database.Games.Update(game);
                 }
