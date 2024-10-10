@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Management;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace RiotGamesLibrary
 {
@@ -70,6 +72,14 @@ namespace RiotGamesLibrary
         {
             foreach (var game in rgGames.Keys)
             {
+                // pass icon as bytes so it doesn't get deleted on game removal
+                byte[] iconData = null;
+                using (var ms = new MemoryStream())
+                {
+                    Bitmap bmp = new Icon(RiotGame.Icons[game]).ToBitmap();
+                    bmp.Save(ms, ImageFormat.Png);
+                    iconData = ms.ToArray();
+                }
                 yield return new GameMetadata()
                 {
                     Name = rgGames[game].Item1,
@@ -78,7 +88,7 @@ namespace RiotGamesLibrary
                     Platforms = new HashSet<MetadataProperty> { new MetadataNameProperty("PC (Windows)") },
                     IsInstalled = RiotGame.IsInstalled(game),
                     InstallDirectory = RiotGame.InstallPath(game),
-                    Icon = new MetadataFile(RiotGame.Icons[game])
+                    Icon = new MetadataFile($"{game}_icon.png", iconData)
                 };
             }
         }
@@ -157,6 +167,11 @@ namespace RiotGamesLibrary
             }
         }
 
+        /// <summary>
+        /// Creates a game action for the given companion app
+        /// </summary>
+        /// <param name="comp">A <c>CompanionApp</c> <see cref="CompanionApp"/></param>
+        /// <returns>A new game action to launch the companion app</returns>
         private GameAction GenAction (CompanionApp comp)
         {
             return new GameAction()
@@ -171,6 +186,9 @@ namespace RiotGamesLibrary
             };
         }
 
+        /// <summary>
+        /// Creates or removes game actions for each companion app based on settings
+        /// </summary>
         public void UpdateCompanionActions()
         {
             PlayniteApi.Database.Games.BeginBufferUpdate();
@@ -238,7 +256,11 @@ namespace RiotGamesLibrary
             }
             PlayniteApi.Database.Games.EndBufferUpdate();
         }
-     
+
+        /// <summary>
+        /// Launch relevant companion apps on game start
+        /// </summary>
+        /// <param name="args"><see cref="OnGameStartedEventArgs"/></param>
         public override void OnGameStarted(OnGameStartedEventArgs args)
         {
             //logger.Debug($"launching game with id {args.Game.Id}");
@@ -266,6 +288,24 @@ namespace RiotGamesLibrary
             {
                 return;
             }
+            OnGameStoppedAsync(args);
+        }
+
+        /// <summary>
+        /// Asynchronously close companion apps and client
+        /// </summary>
+        /// <param name="args"><c>OnGameStoppedEventArgs</c></param>
+        private async void OnGameStoppedAsync(OnGameStoppedEventArgs args)
+        {
+            await Task.Run(() => OGS(args));
+        }
+
+        /// <summary>
+        /// Close companion apps and client
+        /// </summary>
+        /// <param name="args"><c>OnGameStoppedEventArgs</c></param>
+        private void OGS(OnGameStoppedEventArgs args)
+        {
             if (args.Game.GameId != "rg-legendsofruneterra")
             {
                 ObservableCollection<CompanionApp> companionsList = (args.Game.GameId == "rg-leagueoflegends") ? settings.Settings.LeagueCompanions : settings.Settings.ValorantCompanions;
@@ -275,7 +315,7 @@ namespace RiotGamesLibrary
                     if (comp.CloseWithGame)
                     {
                         logger.Info($"Trying to stop {gameName} companion app: {comp.ExeName}");
-                                                var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+                        var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
                         using (var searcher = new ManagementObjectSearcher(wmiQueryString))
                         using (var results = searcher.Get())
                         {
