@@ -38,7 +38,7 @@ namespace RiotGamesLibrary
         private static readonly string iconPath = Path.Combine(AssemblyPath, "icon.png");
 
         public override Guid Id { get; } = Guid.Parse("91d13c6f-63d3-42ed-a100-6f811a8387ea");
-        private int vNum = 3;
+        private int vNum = 4;
 
         // Change to something more appropriate
         public override string Name => "Riot Games";
@@ -76,7 +76,7 @@ namespace RiotGamesLibrary
                 byte[] iconData = null;
                 using (var ms = new MemoryStream())
                 {
-                    Bitmap bmp = new Icon(RiotGame.Icons[game]).ToBitmap();
+                    Bitmap bmp = new Icon(RiotGame.Icons[game], new System.Drawing.Size(256, 256)).ToBitmap();
                     bmp.Save(ms, ImageFormat.Png);
                     iconData = ms.ToArray();
                 }
@@ -100,6 +100,8 @@ namespace RiotGamesLibrary
             if (settings.Settings.VersionNum != vNum)
             {
                 logger.Info("Detected first run of new plugin version, ensuring sources are properly set, clearing outdated game actions, and updating icons");
+                
+                // Ensure source is properly set
                 Guid rgSource = Guid.NewGuid();
                 bool srcFound = false;
                 foreach (var source in PlayniteApi.Database.Sources)
@@ -119,28 +121,26 @@ namespace RiotGamesLibrary
                     PlayniteApi.Database.Sources.Add(rg);
                     PlayniteApi.Database.Sources.Update(rg);
                 }
+
+                // Update game sources, actions, and icons
                 foreach (var game in PlayniteApi.Database.Games)
                 {
                     if (game.PluginId != Id)
                     {
                         continue;
                     }
+
+                    Bitmap bmp = new Icon(RiotGame.Icons[game.GameId], new System.Drawing.Size(256, 256)).ToBitmap();
+                    string savePath = Path.Combine(GetPluginUserDataPath(), $"{game.GameId}_icon.png");
+                    bmp.Save(savePath, ImageFormat.Png);
+
                     if (game.SourceId == null || game.SourceId != rgSource)
                     {
                         game.SourceId = rgSource;
                     }
-                    if (game.GameId == "rg-leagueoflegends")
-                    {
-                        game.Icon = Path.Combine(AssemblyPath, @"Resources\league_of_legends.live.ico");
-                    }
-                    if (game.GameId == "rg-valorant")
-                    {
-                        game.Icon = Path.Combine(AssemblyPath, @"Resources\valorant.live.ico");
-                    }
-                    if (game.GameId == "rg-legendsofruneterra")
-                    {
-                        game.Icon = Path.Combine(AssemblyPath, @"Resources\bacon.live.ico");
-                    }
+
+                    game.Icon = savePath;
+                    
                     if (game.GameActions != null)
                     {
                         List<GameAction> removals = new List<GameAction>();
