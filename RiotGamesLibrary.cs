@@ -65,7 +65,8 @@ namespace RiotGamesLibrary
         {
             { "rg-leagueoflegends", Tuple.Create("League of Legends", "--launch-product=league_of_legends --launch-patchline=live") },
             { "rg-valorant", Tuple.Create("Valorant", "--launch-product=valorant --launch-patchline=live") },
-            { "rg-legendsofruneterra", Tuple.Create("Legends of Runeterra", "--launch-product=bacon --launch-patchline=live") }
+            { "rg-legendsofruneterra", Tuple.Create("Legends of Runeterra", "--launch-product=bacon --launch-patchline=live") },
+            { "rg-2xko", Tuple.Create("2XKO", "--launch-product=lion --launch-patchline=live") }
         };
 
         public override IEnumerable<GameMetadata> GetGames(LibraryGetGamesArgs args)
@@ -194,7 +195,7 @@ namespace RiotGamesLibrary
             PlayniteApi.Database.Games.BeginBufferUpdate();
             foreach (var game in PlayniteApi.Database.Games)
             {
-                if (game.PluginId != Id || game.GameId == "rg-legendsofruneterra")
+                if (game.PluginId != Id || game.GameId == "rg-legendsofruneterra" || game.GameId == "rg-2xko")
                 {
                     continue;
                 }
@@ -265,7 +266,7 @@ namespace RiotGamesLibrary
         {
             //logger.Debug($"launching game with id {args.Game.Id}");
             base.OnGameStarted(args);
-            if (args.Game.PluginId != Id || args.Game.GameId == "rg-legendsofruneterra")
+            if (args.Game.PluginId != Id || args.Game.GameId == "rg-legendsofruneterra" || args.Game.GameId == "rg-2xko")
             {
                 return;
             }
@@ -306,7 +307,7 @@ namespace RiotGamesLibrary
         /// <param name="args"><c>OnGameStoppedEventArgs</c></param>
         private void OGS(OnGameStoppedEventArgs args)
         {
-            if (args.Game.GameId != "rg-legendsofruneterra")
+            if (args.Game.GameId != "rg-legendsofruneterra" && args.Game.GameId != "rg-2xko")
             {
                 ObservableCollection<CompanionApp> companionsList = (args.Game.GameId == "rg-leagueoflegends") ? settings.Settings.LeagueCompanions : settings.Settings.ValorantCompanions;
                 string gameName = (args.Game.GameId == "rg-leagueoflegends") ? "League of Legends" : "Valorant";
@@ -355,6 +356,7 @@ namespace RiotGamesLibrary
             settings.Settings.LeaguePath = RiotGame.IsInstalled("rg-leagueoflegends") ? RiotGame.InstallPath("rg-leagueoflegends") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
             settings.Settings.ValorantPath = RiotGame.IsInstalled("rg-valorant") ? RiotGame.InstallPath("rg-valorant") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
             settings.Settings.LORPath = RiotGame.IsInstalled("rg-legendsofruneterra") ? RiotGame.InstallPath("rg-legendsofruneterra") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
+            settings.Settings.TwoXKOPath = RiotGame.IsInstalled("rg-2xko") ? RiotGame.InstallPath("rg-2xko") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
             SavePluginSettings(settings.Settings);
         }
 
@@ -391,6 +393,7 @@ namespace RiotGamesLibrary
                 { "rg-leagueoflegends", "LeagueClient.exe" },
                 { "rg-valorant", "VALORANT.exe" },
                 { "rg-legendsofruneterra", "LoR.exe" },
+                { "rg-2xko", "Lion.exe" },
             };
             logger.Info($"Executable {idToExe[args.Game.GameId]} for {args.Game.GameId} is found in the tracking path? {File.Exists(Path.Combine(RiotGame.InstallPath(args.Game.GameId), idToExe[args.Game.GameId]))}");
 
