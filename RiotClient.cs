@@ -22,14 +22,16 @@ namespace RiotGamesLibrary
         {
             { "rg-leagueoflegends", new GameName(){registryName = "league_of_legends", exeName = "LeagueClient.exe"} },
             { "rg-valorant", new GameName(){registryName = "valorant", exeName = "VALORANT.exe"} },
-            { "rg-legendsofruneterra", new GameName(){registryName = "bacon", exeName = "LoR.exe"} }
+            { "rg-legendsofruneterra", new GameName(){registryName = "bacon", exeName = "LoR.exe"} },
+            { "rg-2xko", new GameName(){registryName = "lion", exeName = "Lion.exe"} }
         };
 
         public static Dictionary<string, string> Icons = new Dictionary<string, string>()
         {
             { "rg-leagueoflegends",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\league_of_legends.live.ico") },
             { "rg-valorant",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\valorant.live.ico") },
-            { "rg-legendsofruneterra",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\bacon.live.ico") }
+            { "rg-legendsofruneterra",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\bacon.live.ico") },
+            { "rg-2xko",  Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\lion.live.ico") }
         };
 
         public static string InstallPath(string gameId)

@@ -7,6 +7,7 @@
     <sys:String x:Key="LOCRiotGamesLORPath">Legends of Runeterra Install Path:</sys:String>
     <sys:String x:Key="LOCRiotGamesLeaguePath">League of Legends Install Path:</sys:String>
     <sys:String x:Key="LOCRiotGamesValorantPath">Valorant Install Path:</sys:String>
+    <sys:String x:Key="LOCRiotGames2XKOPath">2XKO Install Path:</sys:String>
     <sys:String x:Key="LOCRiotGamesCloseClient">Close Riot Client When Game Is Closed</sys:String>
     <sys:String x:Key="LOCRiotGamesCloseClientAlt">*Alternatively, use the 'Auto Close Clients' section of Playnite settings</sys:String>
     <sys:String x:Key="LOCRiotGamesLeagueCompsTitle">Specify companion applications for League of Legends</sys:String>

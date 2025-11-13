@@ -32,6 +32,7 @@ namespace RiotGamesLibrary
         private bool _LeaguePBE = false;
         private string _ValorantPath = RiotGame.IsInstalled("rg-valorant") ? RiotGame.InstallPath("rg-valorant") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
         private string _LORPath = RiotGame.IsInstalled("rg-legendsofruneterra") ? RiotGame.InstallPath("rg-legendsofruneterra") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
+        private string _2XKOPath = RiotGame.IsInstalled("rg-2xko") ? RiotGame.InstallPath("rg-2xko") : ResourceProvider.GetString("LOCRiotGamesNotInstalled");
         private bool _LeagueUseShortCompName = true;
         private bool _ValUseShortCompName = true;
         private int _VersionNum = 1;
@@ -42,6 +43,7 @@ namespace RiotGamesLibrary
         public bool LeaguePBE { get => _LeaguePBE; set => SetValue(ref _LeaguePBE, value); }
         public string ValorantPath { get => _ValorantPath; set => SetValue(ref _ValorantPath, value);  }
         public string LORPath { get => _LORPath; set => SetValue(ref _LORPath, value);  }
+        public string TwoXKOPath { get => _2XKOPath; set => SetValue(ref _2XKOPath, value);  }
         public ObservableCollection<CompanionApp> LeagueCompanions { get; set; } = new ObservableCollection<CompanionApp>();
         public ObservableCollection<CompanionApp> ValorantCompanions { get; set; } = new ObservableCollection<CompanionApp>();
         public bool LeagueUseShortCompName { get => _LeagueUseShortCompName; set => SetValue(ref _LeagueUseShortCompName, value); }

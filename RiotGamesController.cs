@@ -54,6 +54,19 @@ namespace RiotGamesLibrary
                             return;
                         }
                     }
+                    if (Game.GameId == "rg-2xko")
+                    {
+                        if (File.Exists(Path.Combine(RiotGame.InstallPath("rg-2xko"), "Lion.exe")))
+                        {
+                            var installInfo = new GameInstallationData()
+                            {
+                                InstallDirectory = RiotGame.InstallPath("rg-2xko")
+                            };
+                            InvokeOnInstalled(new GameInstalledEventArgs(installInfo));
+                            _plugin.UpdateSettings();
+                            return;
+                        }
+                    }
                     if (Game.GameId == "rg-leagueoflegends")
                     {
                         if (File.Exists(Path.Combine(RiotGame.InstallPath("rg-leagueoflegends"), "LeagueClient.exe")))
@@ -117,6 +130,10 @@ namespace RiotGamesLibrary
             if (Game.GameId == "rg-legendsofruneterra")
             {
                 return "--uninstall-product=bacon";
+            }
+            if (Game.GameId == "rg-2xko")
+            {
+                return "--uninstall-product=lion";
             }
 
             return string.Empty;
@@ -218,6 +235,17 @@ namespace RiotGamesLibrary
                 if (Game.GameId == "rg-legendsofruneterra")
                 {
                     if (!RiotGame.IsInstalled("rg-legendsofruneterra"))
+                    {
+                        logger.Debug("Uninstall finished");
+                        InvokeOnUninstalled(new GameUninstalledEventArgs());
+                        _plugin.UpdateSettings();
+                        return;
+                    }
+
+                }
+                if (Game.GameId == "rg-2xko")
+                {
+                    if (!RiotGame.IsInstalled("rg-2xko"))
                     {
                         logger.Debug("Uninstall finished");
                         InvokeOnUninstalled(new GameUninstalledEventArgs());

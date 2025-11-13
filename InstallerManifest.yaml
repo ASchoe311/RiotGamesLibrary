@@ -1,5 +1,11 @@
 ﻿AddonId: RiotGamesLibrary_91d13c6f-63d3-42ed-a100-6f811a8387ea
 Packages:
+  - Version: 2.3.2
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2025-10-25
+    PackageUrl: https://github.com/ASchoe311/RiotGamesLibrary/releases/download/v2.3.2/RiotGamesLibrary_91d13c6f-63d3-42ed-a100-6f811a8387ea_2_3_2.pext
+    Changelog:
+          - Add 2XKO support (detect installation, import into Playnite library with correct icon and metadata, game can be launched from Playnite)
   - Version: 2.3.1
     RequiredApiVersion: 6.2.0
     ReleaseDate: 2024-10-24
