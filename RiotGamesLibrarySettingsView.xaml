@@ -20,6 +20,7 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row="0" Margin="5,0,0,15" VerticalAlignment="Center" HorizontalAlignment="Left">
                         <Run Text="{DynamicResource LOCRiotGamesRiotInstallPath}"/>
@@ -30,6 +31,10 @@
                     <TextBlock Grid.Column="0" Grid.Row="3" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
                         <Run Text="{DynamicResource LOCRiotGamesLORPath}"/>
                         <Run Text="{Binding Settings.LORPath, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="4" Margin="5,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <Run Text="{DynamicResource LOCRiotGames2XKOPath}"/>
+                        <Run Text="{Binding Settings.TwoXKOPath, Mode=OneWay}"/>
                     </TextBlock>
                 </Grid>
             </StackPanel>
