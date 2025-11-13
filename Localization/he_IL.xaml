@@ -5,6 +5,7 @@
     <sys:String x:Key="LOCRiotGamesValorantSettings">Valorant Settings</sys:String>
     <sys:String x:Key="LOCRiotGamesRiotInstallPath">Riot Client Install Path:</sys:String>
     <sys:String x:Key="LOCRiotGamesLORPath">Legends of Runeterra Install Path:</sys:String>
+    <sys:String x:Key="LOCRiotGames2XKOPath">2XKO Install Path:</sys:String>
     <sys:String x:Key="LOCRiotGamesLeaguePath">League of Legends Install Path:</sys:String>
     <sys:String x:Key="LOCRiotGamesValorantPath">Valorant Install Path:</sys:String>
     <sys:String x:Key="LOCRiotGamesCloseClient">Close Riot Client When Game Is Closed</sys:String>

@@ -5,6 +5,7 @@
     <sys:String x:Key="LOCRiotGamesValorantSettings">Valorant Einstellungen</sys:String>
     <sys:String x:Key="LOCRiotGamesRiotInstallPath">Riot-Client Installationspfad:</sys:String>
     <sys:String x:Key="LOCRiotGamesLORPath">Legenden of Runeterra Installationspfad:</sys:String>
+    <sys:String x:Key="LOCRiotGames2XKOPath">2XKO Install Path:</sys:String>
     <sys:String x:Key="LOCRiotGamesLeaguePath">League of Legends Installationspfad:</sys:String>
     <sys:String x:Key="LOCRiotGamesValorantPath">Valorant Installationspfad:</sys:String>
     <sys:String x:Key="LOCRiotGamesCloseClient">Riot-Client schließen, wenn das Spiel beendet wird</sys:String>
